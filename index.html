@@ -28,23 +28,16 @@
             --fire-color-mid: #ffa500;
             --fire-color-top: #ffd700;
 
-            /* ألوان المفرقعات */
-            --explosion-color-base: #ff8c00;
-            --explosion-color-spark: #ff4500;
-            /* حجم حاوية المفرقعات (هذا هو الحجم الفعلي للعنصر الذي سيتم تحريكه) */
-            --explosion-item-size-mobile: 40vw; /* حجم المفرقعة على الهاتف */
-            --explosion-item-size-desktop: 250px; /* حجم المفرقعة على الكمبيوتر */
+            /* أحجام العناصر الجانبية (التي ستحتوي على الأنميشنات) */
+            --explosion-area-width-mobile: 40vw;
+            --explosion-area-height-mobile: 40vw; /* لجعلها مربعة ومتناسبة */
+            --explosion-area-width-desktop: 250px;
+            --explosion-area-height-desktop: 250px;
 
-            /* ألوان الصواريخ */
-            --rocket-body: #a0a0a0;
-            --rocket-tip: #d0d0d0;
-            --rocket-fin: #808080;
-            --rocket-flame-color1: #ff4500;
-            --rocket-flame-color2: #ffd700;
-            --rocket-flame-color3: #ffffff;
-            /* حجم حاوية الصاروخ (هذا هو الحجم الفعلي للعنصر الذي سيتم تحريكه) */
-            --rocket-item-width-mobile: 20vw; /* عرض حاوية الصاروخ على الهاتف */
-            --rocket-item-width-desktop: 120px; /* عرض حاوية الصاروخ على الكمبيوتر */
+            --rocket-area-width-mobile: 20vw;
+            --rocket-area-height-mobile: 100vh; /* الصواريخ تمتد على طول الشاشة */
+            --rocket-area-width-desktop: 120px;
+            --rocket-area-height-desktop: 100vh;
         }
 
         /* ------------------------------------- */
@@ -62,7 +55,7 @@
             margin: 0;
             text-align: center;
             position: relative;
-            overflow: hidden; /* منع أي تمرير لضمان التناسق على الهاتف */
+            /* أزلنا overflow: hidden من body لضمان أن margin السالب يعمل بشكل صحيح */
             box-sizing: border-box;
             -webkit-font-smoothing: antialiased; /* لتحسين وضوح الخطوط على iOS */
         }
@@ -78,7 +71,7 @@
             left: 0;
             z-index: 0;
             pointer-events: none;
-            overflow: hidden;
+            overflow: hidden; /* أعدنا overflow: hidden هنا للجسيمات فقط */
         }
 
         .particle {
@@ -98,8 +91,7 @@
         /* ------------------------------------- */
         .fire-effect {
             position: fixed;
-            /* Fire effect width is kept the same for a natural overflow appearance */
-            width: 15vw;
+            width: 15vw; /* العرض الأصلي للنار */
             min-width: 60px;
             max-width: 80px;
             height: 100vh;
@@ -108,23 +100,19 @@
             display: flex;
             flex-direction: column-reverse;
             pointer-events: none;
-            overflow: hidden;
+            overflow: hidden; /* Fire effect container needs its own overflow */
         }
         .fire-left {
             left: 0;
-            /* Adjust margin to pull half of the fire effect out of view */
-            margin-left: calc(-0.5 * var(--fire-effect-width, 15vw)); /* Assuming a variable or default value */
+            margin-left: calc(-0.5 * var(--fire-effect-width, 15vw)); /* سحب لليسار بمقدار نصف عرضه */
         }
         .fire-right {
             right: 0;
-            /* Adjust margin to pull half of the fire effect out of view */
-            margin-right: calc(-0.5 * var(--fire-effect-width, 15vw)); /* Assuming a variable or default value */
+            margin-right: calc(-0.5 * var(--fire-effect-width, 15vw)); /* سحب لليمين بمقدار نصف عرضه */
         }
-        /* Define --fire-effect-width for calc to work, or use direct width */
         .fire-left, .fire-right {
-            --fire-effect-width: 15vw; /* Define for mobile */
+            --fire-effect-width: 15vw; /* تعريف المتغير ليتم استخدامه في calc */
         }
-
 
         .flame {
             position: relative;
@@ -155,34 +143,34 @@
         }
 
         /* ------------------------------------- */
-        /* 5. تأثير الانفجار (Fireworks) - تعديل جذرى على المحاذاة */
+        /* 5. تأثير الانفجار (Fireworks) - حل مشكلة المحاذاة */
         /* ------------------------------------- */
         .explosion-side {
             position: fixed;
-            width: var(--explosion-item-size-mobile); /* الحجم الفعلي للحاوية */
-            height: var(--explosion-item-size-mobile);
+            width: var(--explosion-area-width-mobile);
+            height: var(--explosion-area-height-mobile);
             min-width: 100px;
             min-height: 100px;
-            max-width: var(--explosion-item-size-desktop);
-            max-height: var(--explosion-item-size-desktop);
+            max-width: var(--explosion-area-width-desktop);
+            max-height: var(--explosion-area-height-desktop);
             top: 10vh;
             pointer-events: none;
             z-index: 15;
             filter: drop-shadow(0 0 6px var(--explosion-color-base));
-            overflow: hidden; /* للحفاظ على الأنميشنات داخلها */
+            overflow: hidden; /* مهم جداً هنا */
             display: flex;
-            justify-content: center;
-            align-items: center;
+            justify-content: center; /* لمركزة الشرارات داخل الحاوية */
+            align-items: center; /* لمركزة الشرارات داخل الحاوية */
         }
         .explosion-left {
             left: 0;
-            /* سحب العنصر للخارج بمقدار نصف عرضه لكي يظهر نصفه فقط داخل الشاشة */
-            margin-left: calc(-0.5 * var(--explosion-item-size-mobile));
+            /* سحب العنصر لليسار بمقدار نصف عرضه ليظهر نصفه فقط */
+            margin-left: calc(-0.5 * var(--explosion-area-width-mobile));
         }
         .explosion-right {
             right: 0;
-            /* سحب العنصر للخارج بمقدار نصف عرضه لكي يظهر نصفه فقط داخل الشاشة */
-            margin-right: calc(-0.5 * var(--explosion-item-size-mobile));
+            /* سحب العنصر لليمين بمقدار نصف عرضه ليظهر نصفه فقط */
+            margin-right: calc(-0.5 * var(--explosion-area-width-mobile));
         }
 
         .spark {
@@ -208,34 +196,34 @@
         }
 
         /* ------------------------------------- */
-        /* 6. تأثير الصواريخ (Rockets) - تعديل جذرى على المحاذاة */
+        /* 6. تأثير الصواريخ (Rockets) - حل مشكلة المحاذاة */
         /* ------------------------------------- */
         .rocket-container {
             position: fixed;
-            width: var(--rocket-item-width-mobile); /* الحجم الفعلي للحاوية */
-            height: 100vh;
+            width: var(--rocket-area-width-mobile);
+            height: var(--rocket-area-height-mobile);
             bottom: 0;
             z-index: 20;
             pointer-events: none;
             display: flex;
-            justify-content: center;
+            justify-content: center; /* لمركزة الصاروخ داخل الحاوية */
             align-items: flex-end;
-            overflow: hidden; /* للحفاظ على الأنميشنات داخلها */
+            overflow: hidden; /* مهم جداً هنا */
         }
         .rocket-left {
             left: 0;
-            /* سحب العنصر للخارج بمقدار نصف عرضه لكي يظهر نصفه فقط داخل الشاشة */
-            margin-left: calc(-0.5 * var(--rocket-item-width-mobile));
+            /* سحب العنصر لليسار بمقدار نصف عرضه ليظهر نصفه فقط */
+            margin-left: calc(-0.5 * var(--rocket-area-width-mobile));
         }
         .rocket-right {
             right: 0;
-            /* سحب العنصر للخارج بمقدار نصف عرضه لكي يظهر نصفه فقط داخل الشاشة */
-            margin-right: calc(-0.5 * var(--rocket-item-width-mobile));
+            /* سحب العنصر لليمين بمقدار نصف عرضه ليظهر نصفه فقط */
+            margin-right: calc(-0.5 * var(--rocket-area-width-mobile));
         }
 
         .rocket {
-            position: absolute;
-            bottom: -150px;
+            position: absolute; /* للحفاظ على موضعه بالنسبة لـ rocket-container */
+            bottom: -150px; /* يبدأ من خارج الشاشة */
             width: 6vw;
             height: 16vw;
             min-width: 25px;
@@ -246,13 +234,14 @@
             border-radius: 4px 4px 1px 1px;
             opacity: 0;
             box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+            /* أزلنا أي تحويل translateX من هنا ليعتمد على flexbox في الحاوية */
         }
         .rocket::before {
             content: '';
             position: absolute;
             top: -3vw;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%); /* هذا التحويل لمركزة رأس الصاروخ فقط */
             width: 0;
             height: 0;
             border-left: 3vw solid transparent;
@@ -281,7 +270,7 @@
             position: absolute;
             bottom: -6vw;
             left: 50%;
-            transform: translateX(-50%);
+            transform: translateX(-50%); /* هذا التحويل لمركزة شعلة الصاروخ فقط */
             width: 5vw;
             height: 12vw;
             min-width: 20px;
@@ -360,6 +349,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
+            /* حل مشكلة العداد: تأكد من أن loader-text يظهر فوق loader */
+            z-index: 1; /* مهم لضمان ظهور المحتوى فوق الـ loader نفسه */
         }
 
         .loader {
@@ -374,6 +365,7 @@
             height: 18vw;
             animation: spin var(--animation-speed) linear infinite;
             position: absolute;
+            z-index: 0; /* تأكد أنه تحت النص */
         }
 
         .loader-text {
@@ -383,6 +375,8 @@
             color: var(--text-color);
             position: absolute;
             font-weight: bold;
+            z-index: 2; /* اجعله فوق الدائرة */
+            background-color: transparent; /* تأكد من عدم وجود خلفية تحجب */
         }
 
         .main-text {
@@ -486,34 +480,29 @@
             .fire-effect {
                 width: 120px;
             }
-            /* تحديد عرض النار لـ calc */
             .fire-left, .fire-right {
-                --fire-effect-width: 120px; /* Define for desktop */
+                --fire-effect-width: 120px;
+                margin-left: calc(-0.5 * var(--fire-effect-width));
+            }
+            .fire-right {
+                margin-right: calc(-0.5 * var(--fire-effect-width));
             }
             .flame {
                 height: 60px;
                 filter: blur(5px);
                 margin: 0 auto 5px auto;
             }
-            /* Fire effect positioning for desktop */
-            .fire-left {
-                margin-left: calc(-0.5 * var(--fire-effect-width));
-            }
-            .fire-right {
-                margin-right: calc(-0.5 * var(--fire-effect-width));
-            }
-
 
             .explosion-side {
-                width: var(--explosion-item-size-desktop);
-                height: var(--explosion-item-size-desktop);
+                width: var(--explosion-area-width-desktop);
+                height: var(--explosion-area-height-desktop);
                 top: 20vh;
             }
             .explosion-left {
-                margin-left: calc(-0.5 * var(--explosion-item-size-desktop));
+                margin-left: calc(-0.5 * var(--explosion-area-width-desktop));
             }
             .explosion-right {
-                margin-right: calc(-0.5 * var(--explosion-item-size-desktop));
+                margin-right: calc(-0.5 * var(--explosion-area-width-desktop));
             }
             .spark {
                 width: 10px;
@@ -521,15 +510,15 @@
                 box-shadow: 0 0 8px var(--explosion-color-spark), 0 0 15px var(--explosion-color-base);
             }
 
-
             .rocket-container {
-                width: var(--rocket-item-width-desktop);
+                width: var(--rocket-area-width-desktop);
+                height: var(--rocket-area-height-desktop);
             }
             .rocket-left {
-                margin-left: calc(-0.5 * var(--rocket-item-width-desktop));
+                margin-left: calc(-0.5 * var(--rocket-area-width-desktop));
             }
             .rocket-right {
-                margin-right: calc(-0.5 * var(--rocket-item-width-desktop));
+                margin-right: calc(-0.5 * var(--rocket-area-width-desktop));
             }
             .rocket {
                 width: 35px;
@@ -695,7 +684,8 @@
             let countdown = 3;
 
             function updateLoaderCountdown() {
-                loaderText.textContent = countdown;
+                loaderText.textContent = countdown; // هذا السطر يغير النص
+                console.log("Countdown: " + countdown); // للتأكد من أن الكود يعمل
                 if (countdown > 0) {
                     countdown--;
                     setTimeout(updateLoaderCountdown, 1000);
