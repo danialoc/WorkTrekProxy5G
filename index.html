@@ -28,18 +28,6 @@
             --fire-color-mid: #ffa500;
             --fire-color-top: #ffd700;
 
-            /* ألوان الانفجار (المفرقعات) */
-            --explosion-color-base: #ff8c00; /* لون أساسي */
-            --explosion-color-spark: #ffd700; /* لون الشرارة */
-
-            /* ألوان الصواريخ */
-            --rocket-body: #a0a0a0;
-            --rocket-tip: #d0d0d0;
-            --rocket-fin: #808080;
-            --rocket-flame-color1: #ff4500;
-            --rocket-flame-color2: #ffa500;
-            --rocket-flame-color3: #ffd700;
-
             /* أحجام العناصر الجانبية (التي ستحتوي على الأنميشنات) */
             --explosion-area-width-mobile: 40vw;
             --explosion-area-height-mobile: 40vw; /* لجعلها مربعة ومتناسبة */
@@ -67,6 +55,7 @@
             margin: 0;
             text-align: center;
             position: relative;
+            /* أزلنا overflow: hidden من body لضمان أن margin السالب يعمل بشكل صحيح */
             box-sizing: border-box;
             -webkit-font-smoothing: antialiased; /* لتحسين وضوح الخطوط على iOS */
         }
@@ -303,12 +292,6 @@
             90% { bottom: 100vh; opacity: 1; transform: scale(1); }
             100% { bottom: 150vh; opacity: 0; transform: scale(1.2); }
         }
-        
-        @keyframes rocket-flame-pulse {
-            0% { transform: translateX(-50%) scaleY(1); opacity: 0.9; }
-            50% { transform: translateX(-50%) scaleY(1.05); opacity: 1; }
-            100% { transform: translateX(-50%) scaleY(1); opacity: 0.9; }
-        }
 
         /* ------------------------------------- */
         /* 7. الحاوية الرئيسية للمحتوى (Container) */
@@ -366,7 +349,8 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 1;
+            /* حل مشكلة العداد: تأكد من أن loader-text يظهر فوق loader */
+            z-index: 1; /* مهم لضمان ظهور المحتوى فوق الـ loader نفسه */
         }
 
         .loader {
@@ -381,7 +365,7 @@
             height: 18vw;
             animation: spin var(--animation-speed) linear infinite;
             position: absolute;
-            z-index: 0;
+            z-index: 0; /* تأكد أنه تحت النص */
         }
 
         .loader-text {
@@ -391,8 +375,8 @@
             color: var(--text-color);
             position: absolute;
             font-weight: bold;
-            z-index: 2;
-            background-color: transparent;
+            z-index: 2; /* اجعله فوق الدائرة */
+            background-color: transparent; /* تأكد من عدم وجود خلفية تحجب */
         }
 
         .main-text {
@@ -579,10 +563,10 @@
     <div class="background-particles"></div>
 
     <div class="explosion-side explosion-left" id="explosionLeft" style="display: none;">
-    </div>
+        </div>
 
     <div class="explosion-side explosion-right" id="explosionRight" style="display: none;">
-    </div>
+        </div>
 
     <div class="rocket-container rocket-left" id="rocketLeft" style="display: none;">
         <div class="rocket">
@@ -623,7 +607,7 @@
     <audio id="fireworkSound" src="Music.mp3" autoplay muted preload="auto" loop></audio>
 
     <script>
-        const ipChangeUrl = "https://localtonet.com/android/changeip?u=33"; // رابط تغيير الـ IP الخاص بك
+        const ipChangeUrl = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35NvLM8SToJ"; // رابط تغيير الـ IP الخاص بك
 
         const changingIpMessage = document.getElementById('changingIpMessage');
         const successContent = document.getElementById('successContent');
@@ -663,7 +647,6 @@
 
         // إنشاء الشرارات ديناميكيًا للمفرقعات
         function createSparks(explosionElement, num = 15) {
-            // مسح الشرارات القديمة قبل إنشاء جديدة لتجنب التراكم
             while (explosionElement.firstChild) {
                 explosionElement.removeChild(explosionElement.firstChild);
             }
@@ -673,7 +656,7 @@
                 explosionElement.appendChild(spark);
 
                 const angle = Math.random() * 360;
-                const distance = Math.random() * 70 + 40; // زيادة المسافة قليلاً
+                const distance = Math.random() * 70 + 40;
 
                 spark.style.setProperty('--angle', angle);
                 spark.style.setProperty('--distance', distance);
@@ -698,15 +681,15 @@
 
             ipChangeFrame.src = ipChangeUrl;
 
-            let countdown = 3; // بدأ العد التنازلي من 3
+            let countdown = 3;
 
             function updateLoaderCountdown() {
-                loaderText.textContent = countdown;
+                loaderText.textContent = countdown; // هذا السطر يغير النص
+                console.log("Countdown: " + countdown); // للتأكد من أن الكود يعمل
                 if (countdown > 0) {
                     countdown--;
                     setTimeout(updateLoaderCountdown, 1000);
                 } else {
-                    // إظهار المحتوى النهائي بعد انتهاء العداد
                     changingIpMessage.style.display = 'none';
                     successContent.style.display = 'block';
 
@@ -717,14 +700,14 @@
                     const rocketLeft = rocketLeftContainer.querySelector('.rocket');
                     if (rocketLeft) {
                         rocketLeft.style.animation = 'launch-rocket 5s linear infinite';
-                        rocketLeft.style.animationDelay = '0s'; // يبدأ مباشرة
+                        rocketLeft.style.animationDelay = '0s';
                         rocketLeftContainer.style.display = 'flex';
                     }
 
                     const rocketRight = rocketRightContainer.querySelector('.rocket');
                     if (rocketRight) {
                         rocketRight.style.animation = 'launch-rocket 5s linear infinite';
-                        rocketRight.style.animationDelay = '2.5s'; // يبدأ بعد 2.5 ثانية
+                        rocketRight.style.animationDelay = '2.5s';
                         rocketRightContainer.style.display = 'flex';
                     }
                     
@@ -738,8 +721,8 @@
         // بدء العملية تلقائياً عند تحميل محتوى DOM بالكامل
         document.addEventListener('DOMContentLoaded', () => {
             createBackgroundParticles();
-            createSparks(explosionLeft, 15); // إنشاء 15 شرارة للانفجار الأيسر
-            createSparks(explosionRight, 15); // إنشاء 15 شرارة للانفجار الأيمن
+            createSparks(explosionLeft, 15);
+            createSparks(explosionRight, 15);
             startIpChangeProcess();
         });
     </script>
