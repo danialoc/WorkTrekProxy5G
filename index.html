@@ -47,8 +47,8 @@
             margin: 0;
             text-align: center;
             position: relative;
-            overflow-x: hidden;
-            overflow-y: auto; /* يسمح بالتمرير إذا كان المحتوى يتجاوز الشاشة */
+            overflow-x: hidden; /* Prevent horizontal scroll */
+            overflow-y: auto;
         }
 
         /* الجسيمات الخلفية */
@@ -245,6 +245,36 @@
             border-radius: 2px;
         }
 
+        /* زعانف الصاروخ (على الجانبين) - For a simple visual, not realistic 3D */
+        .rocket::after {
+            content: '';
+            position: absolute;
+            bottom: 10px; /* Adjust to be slightly above the flame */
+            left: -8px; /* Position relative to the rocket body */
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-right: 15px solid var(--rocket-fin-color);
+            transform: skewY(-15deg); /* Slight angle for a fin look */
+            box-shadow: -2px 2px 5px rgba(0,0,0,0.3);
+        }
+
+        /* Add another pseudo-element for the other fin, or use a nested div if more complex fins are needed */
+        .rocket .fin-right { /* You'd need to add a div with class .fin-right inside .rocket */
+            content: '';
+            position: absolute;
+            bottom: 10px;
+            right: -8px;
+            width: 0;
+            height: 0;
+            border-top: 15px solid transparent;
+            border-bottom: 15px solid transparent;
+            border-left: 15px solid var(--rocket-fin-color);
+            transform: skewY(15deg);
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
+        }
+
         .rocket-flame {
             position: absolute;
             bottom: -30px;
@@ -305,7 +335,7 @@
             animation: fadeIn 1s ease-out forwards;
             max-width: 90%;
             width: 500px;
-            box-sizing: border-box; /* للتأكد من أن padding لا يزيد العرض الكلي */
+            box-sizing: border-box;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
@@ -374,58 +404,16 @@
         }
 
         .message-display {
-            display: none; /* مخفي مبدئيا */
+            display: none;
             font-size: 1.8em;
             color: var(--primary-color);
             font-weight: 700;
             margin-top: 30px;
             animation: scaleIn 0.5s ease-out forwards;
-            width: 100%; /* لضمان أن المحتوى يأخذ العرض الكامل */
-            box-sizing: border-box; /* لضمان أن الـ padding لا يزيد العرض الكلي */
         }
         .message-display p {
             margin: 0;
             font-size: 1em;
-        }
-
-        /* المحتوى الأولي الذي يظهر قبل الضغط على الزر */
-        .initial-content {
-            display: flex; /* لضمان عرض المحتوى الأولي بشكل صحيح */
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            width: 100%;
-        }
-
-        .initial-content p {
-            margin-bottom: 20px;
-            font-size: 1.1em;
-            opacity: 0.9;
-        }
-
-        /* تنسيق زر تغيير الاي بي */
-        #changeIpButton {
-            background-color: var(--secondary-color);
-            color: white;
-            padding: 12px 25px;
-            border: none;
-            border-radius: var(--border-radius);
-            cursor: pointer;
-            font-size: 1.2em;
-            font-weight: bold;
-            transition: background-color 0.3s ease, transform 0.1s ease;
-            box-shadow: 0 4px 15px rgba(33, 150, 243, 0.4);
-            margin-top: 20px; /* لبعض التباعد */
-        }
-
-        #changeIpButton:hover {
-            background-color: #1976D2; /* لون أزرق أغمق عند التحويم */
-            transform: translateY(-3px);
-        }
-
-        #changeIpButton:active {
-            transform: translateY(0);
-            box-shadow: 0 2px 10px rgba(33, 150, 243, 0.6);
         }
 
         .additional-info {
@@ -466,21 +454,11 @@
         /* التعديلات المتجاوبة (Responsive) */
         @media (max-width: 600px) {
             .container {
-                padding: 30px; /* تقليل المساحة الداخلية */
+                padding: 30px;
                 border-radius: 10px;
-                width: 95%; /* استخدام عرض أكبر على الشاشات الصغيرة */
-                max-width: unset; /* إلغاء الحد الأقصى للعرض */
             }
             h1 {
-                font-size: 1.8em; /* تقليل حجم العنوان */
-            }
-            .initial-content p,
-            .main-text {
-                font-size: 1em; /* تقليل حجم الخط للنصوص الرئيسية */
-            }
-            #changeIpButton {
-                padding: 10px 20px; /* تقليل حجم زر التغيير */
-                font-size: 1.1em;
+                font-size: 1.8em;
             }
             .loader-wrapper {
                 width: 80px;
@@ -494,68 +472,101 @@
             .loader-text {
                 font-size: 1em;
             }
+            .main-text {
+                font-size: 1em;
+            }
             .message-display {
-                font-size: 1.5em; /* تقليل حجم خط رسالة النجاح */
+                font-size: 1.5em;
             }
             .additional-info {
-                font-size: 0.85em; /* تقليل حجم خط المعلومات الإضافية */
+                font-size: 0.85em;
             }
-
-            /* تعديلات تأثيرات الخلفية للموبايل */
+            /* Adjust fire effect for smaller screens */
             .fire-effect {
-                width: 80px; /* تقليل عرض تأثير النار */
-                left: -10px; /* تحريك النار لليسار قليلا */
-                right: -10px; /* تحريك النار لليمين قليلا */
+                width: 80px; /* Reduced width */
+                transform: translateX(0); /* Reset transform for better positioning */
+            }
+            .fire-left {
+                left: -10px; /* Adjust position */
+            }
+            .fire-right {
+                right: -10px; /* Adjust position */
             }
             .flame {
-                height: 50px; /* تقليل ارتفاع اللهب */
+                height: 50px; /* Smaller flames */
+                filter: blur(4px); /* Less blur for better performance */
             }
 
+            /* Adjust explosion effect for smaller screens */
             .explosion-side {
-                width: 100px; /* تقليل حجم حاوية الانفجار */
+                width: 100px;
                 height: 100px;
-                top: 15%; /* تعديل الموضع العلوي */
+                top: 15%; /* Slightly higher */
             }
             .explosion-left {
-                left: 0%; /* جعلها أقرب للحافة اليسرى */
-                transform: translateX(0); /* إزالة التحويل الإضافي */
+                left: 0%; /* Closer to edge */
+                transform: translateX(0);
             }
             .explosion-right {
-                left: calc(100% - 100px - 0%); /* جعلها أقرب للحافة اليمنى */
+                left: calc(100% - 100px - 0%); /* Closer to edge */
             }
             .spark {
-                width: 10px; /* تقليل حجم الشرارات */
+                width: 10px; /* Smaller sparks */
                 height: 10px;
+                box-shadow: 0 0 6px var(--explosion-color2), 0 0 12px var(--explosion-color1); /* Less intense glow */
             }
             @keyframes explode-spark-infinite {
-                20% {
-                    transform: translate(calc(var(--distance) * 0.7 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 0.7 * sin(var(--angle) * 0.0174533))) scale(0.8);
-                }
-                80% {
-                    transform: translate(calc(var(--distance) * 1.0 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 1.0 * sin(var(--angle) * 0.0174533))) scale(0.4);
-                }
+                0% { opacity: 0; transform: translate(0, 0) scale(0.1); }
+                20% { opacity: 1; transform: translate(calc(var(--distance) * 0.8 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 0.8 * sin(var(--angle) * 0.0174533))) scale(0.8); } /* Shorter distance */
+                80% { opacity: 0; transform: translate(calc(var(--distance) * 1.2 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 1.2 * sin(var(--angle) * 0.0174533))) scale(0.4); }
+                100% { opacity: 0; transform: translate(0, 0) scale(0.1); }
             }
 
 
+            /* Adjust rocket effect for smaller screens */
             .rocket-container {
-                width: 40px; /* تقليل عرض حاوية الصواريخ */
-                left: 2%; /* تعديل الموقع لليسار */
-                right: 2%; /* تعديل الموقع لليمين */
+                width: 40px; /* Smaller container */
             }
             .rocket {
-                width: 25px; /* تقليل عرض الصاروخ */
-                height: 70px; /* تقليل ارتفاع الصاروخ */
+                width: 20px;
+                height: 60px;
             }
             .rocket::before { /* مقدمة الصاروخ */
-                top: -12px;
-                border-left: 12px solid transparent;
-                border-right: 12px solid transparent;
-                border-bottom: 18px solid var(--rocket-tip-color);
+                top: -10px;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-bottom: 15px solid var(--rocket-tip-color);
             }
             .rocket-flame {
-                width: 20px; /* تقليل عرض اللهب */
-                height: 50px; /* تقليل ارتفاع اللهب */
-                bottom: -25px;
+                width: 15px;
+                height: 40px;
+                bottom: -20px;
+                filter: blur(6px); /* Less blur for performance */
+                box-shadow: 0 0 10px var(--rocket-flame-color1), 0 0 20px var(--rocket-flame-color2); /* Less intense glow */
+            }
+        }
+
+        /* Further reduce animations for very small screens or low-performance devices */
+        @media (max-width: 400px) {
+            .background-particles, .fire-effect, .explosion-side, .rocket-container {
+                /* Optionally hide or drastically simplify effects on very small screens */
+                /* For example, hide particles entirely to save performance: */
+                /* display: none; */
+            }
+            .container {
+                padding: 20px;
+            }
+            h1 {
+                font-size: 1.6em;
+            }
+            .main-text {
+                font-size: 0.9em;
+            }
+            .message-display {
+                font-size: 1.3em;
+            }
+            .additional-info {
+                font-size: 0.8em;
             }
         }
     </style>
@@ -618,7 +629,7 @@
     <div class="rocket-container rocket-left" id="rocketLeft">
         <div class="rocket">
             <div class="rocket-flame"></div>
-        </div>
+            </div>
         <div class="rocket">
             <div class="rocket-flame"></div>
         </div>
@@ -642,11 +653,6 @@
     <div class="container">
         <h1><strong>worktrekproxy5G</strong></h1>
 
-        <div class="initial-content" id="initialContent">
-            <p>اضغط على الزر لتغيير الآي بي وبدء عملية التحديث.</p>
-            <button id="changeIpButton">تغيير الآي بي</button>
-        </div>
-
         <div class="content-area">
             <div class="message-display" id="changingIpMessage">
                 <div class="loader-wrapper">
@@ -668,13 +674,11 @@
 
     <iframe id="ipChangeFrame" name="ipChangeFrame"></iframe>
 
-    <audio id="fireworkSound" src="https://cdn.pixabay.com/download/audio/2023/06/11/audio_a34b223d6a.mp3?filename=aggressive-sport-trailer-149022.mp3" preload="auto" muted loop></audio>
+    <audio id="fireworkSound" src="Music.mp3" autoplay muted preload="auto" loop></audio>
 
     <script>
         const ipChangeUrl = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35NvLM8SToJ"; // رابط تغيير الـ IP الخاص بك
 
-        const initialContent = document.getElementById('initialContent');
-        const changeIpButton = document.getElementById('changeIpButton');
         const changingIpMessage = document.getElementById('changingIpMessage');
         const successContent = document.getElementById('successContent');
         const loaderText = changingIpMessage.querySelector('.loader-text');
@@ -685,31 +689,31 @@
         const rocketRight = document.getElementById('rocketRight');
         const fireworkSound = document.getElementById('fireworkSound'); // جلب عنصر الصوت
 
-        // إخفاء المحتوى الخاص بالتحميل والنجاح والمفرقعات والصواريخ مبدئياً
-        changingIpMessage.style.display = 'none';
+        // إخفاء محتوى النجاح والمفرقعات والصواريخ مبدئياً
         successContent.style.display = 'none';
         explosionLeft.style.display = 'none';
         explosionRight.style.display = 'none';
         rocketLeft.style.display = 'none';
         rocketRight.style.display = 'none';
 
-        // دالة بدء عملية تغيير الـ IP والصوت
-        function startProcess() {
-            // 1. تشغيل الصوت فوراً عند الضغط على الزر
-            fireworkSound.muted = false; // إلغاء كتم الصوت
+        // دالة لتشغيل صوت المفرقعات (سيحاول إلغاء الكتم)
+        function playFireworkSound() {
+            if (fireworkSound.muted) {
+                fireworkSound.muted = false; // محاولة إلغاء كتم الصوت
+            }
             fireworkSound.play().catch(e => {
-                console.error("فشل تشغيل الصوت:", e);
-                // هذه الرسالة ستظهر إذا كان هناك خطأ، ولكن بعد تفاعل المستخدم
-                // عادةً ما يعمل التشغيل بنجاح.
+                console.warn("Autoplay was prevented or unmuting failed. User interaction needed to play sound.", e);
+                // هنا يمكنك عرض رسالة للمستخدم بضرورة النقر لتشغيل الصوت
+                // أو تجاهل إذا كنت لا تريد إجبار المستخدم على ذلك
             });
+        }
 
-            // 2. إخفاء المحتوى الأولي والزر
-            initialContent.style.display = 'none';
-
-            // 3. إظهار رسالة "يتم تغيير الآي بي" مع الـ loader
+        // دالة بدء عملية تغيير الـ IP
+        function startIpChangeProcess() {
+            // إظهار رسالة "يتم تغيير الآي بي" مع الـ loader
             changingIpMessage.style.display = 'block';
 
-            // 4. بدء عملية تغيير الـ IP الفعلية في الـ iframe المخفي
+            // بدء عملية تغيير الـ IP الفعلية في الـ iframe المخفي
             ipChangeFrame.src = ipChangeUrl;
 
             let countdown = 3; // محاكاة عملية تستغرق 3 ثوانٍ
@@ -721,25 +725,33 @@
                     setTimeout(updateLoaderCountdown, 1000); // تحديث كل ثانية
                 } else {
                     // بعد انتهاء العد التنازلي:
-                    // إخفاء رسالة التغيير
+                    // 1. إخفاء رسالة التغيير
                     changingIpMessage.style.display = 'none';
-                    // إظهار محتوى النجاح
+                    // 2. إظهار محتوى النجاح
                     successContent.style.display = 'block';
 
-                    // تفعيل تأثيرات الانفجار والصواريخ في الجانبين بشكل دائم
+                    // 3. تفعيل تأثيرات الانفجار والصواريخ في الجانبين بشكل دائم
                     explosionLeft.style.display = 'block';
                     explosionRight.style.display = 'block';
                     rocketLeft.style.display = 'block';
                     rocketRight.style.display = 'block';
+
+                    // 4. تشغيل صوت المفرقعات (محاولة إلغاء الكتم)
+                    playFireworkSound();
                 }
             }
 
-            // بدء العد التنازلي
+            // بدء العد التنازلي فور تحميل الصفحة
             updateLoaderCountdown();
         }
 
-        // إضافة مستمع حدث للنقر على زر "تغيير الآي بي"
-        changeIpButton.addEventListener('click', startProcess);
+        // بدء العملية تلقائياً عند تحميل محتوى DOM بالكامل
+        document.addEventListener('DOMContentLoaded', () => {
+            // ملاحظة: المتصفحات الحديثة قد تمنع التشغيل التلقائي حتى للصوت المكتوم إذا لم يكن هناك تفاعل سابق.
+            // ولكن إضافة autoplay muted تزيد من احتمالية التشغيل.
+            // قم ببدء عملية الـ IP بغض النظر عن حالة الصوت.
+            startIpChangeProcess();
+        });
     </script>
 </body>
 </html>
