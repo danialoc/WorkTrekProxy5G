@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <title>worktrekproxy5G</title>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
@@ -20,17 +20,19 @@
             --dark-bg: #1a1a2e;
             --darker-bg: #0f0f1c;
             --text-color: #ffffff;
-            --border-radius: 12px; /* تم تقليلها قليلاً */
+            --border-radius: 10px; /* تم تقليلها أكثر للهاتف */
             --animation-speed: 1.5s;
 
-            /* ألوان وتصغير لأداء أفضل على الهاتف */
-            --fire-color-base: #ff4500; /* OrangeRed */
-            --fire-color-mid: #ffa500;  /* Orange */
-            --fire-color-top: #ffd700;  /* Gold */
+            /* ألوان النار */
+            --fire-color-base: #ff4500;
+            --fire-color-mid: #ffa500;
+            --fire-color-top: #ffd700;
 
-            --explosion-color-base: #ff8c00; /* DarkOrange */
-            --explosion-color-spark: #ff4500; /* OrangeRed */
+            /* ألوان المفرقعات */
+            --explosion-color-base: #ff8c00;
+            --explosion-color-spark: #ff4500;
 
+            /* ألوان الصواريخ */
             --rocket-body: #a0a0a0;
             --rocket-tip: #d0d0d0;
             --rocket-fin: #808080;
@@ -40,7 +42,7 @@
         }
 
         /* ------------------------------------- */
-        /* 2. التنسيقات الأساسية للجسم والصفحة */
+        /* 2. التنسيقات الأساسية للجسم والصفحة (Mobile-First) */
         /* ------------------------------------- */
         body {
             background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
@@ -54,9 +56,9 @@
             margin: 0;
             text-align: center;
             position: relative;
-            overflow-x: hidden; /* منع التمرير الأفقي تمامًا */
-            overflow-y: auto; /* السماح بالتمرير العمودي إذا لزم الأمر */
+            overflow: hidden; /* منع أي تمرير لضمان التناسق على الهاتف */
             box-sizing: border-box;
+            -webkit-font-smoothing: antialiased; /* لتحسين وضوح الخطوط على iOS */
         }
 
         /* ------------------------------------- */
@@ -90,42 +92,44 @@
         /* ------------------------------------- */
         .fire-effect {
             position: fixed;
-            width: 100px; /* حجم معقول للهاتف كقيمة افتراضية */
+            width: 15vw; /* العرض بالنسبة لعرض الشاشة */
+            max-width: 80px; /* حد أقصى للعرض لكي لا تصبح ضخمة على شاشات الكمبيوتر */
             height: 100vh;
             bottom: 0;
             z-index: 5;
             display: flex;
             flex-direction: column-reverse;
             pointer-events: none;
-            overflow: hidden; /* لمنع الشعلات من الخروج عن الحاوية */
+            overflow: hidden;
         }
         .fire-left {
             left: 0;
-            transform: translateX(-50%); /* لإخفاء نصف العنصر خارج الشاشة */
+            transform: translateX(-50%); /* إخفاء نصف العنصر خارج الشاشة */
         }
         .fire-right {
             right: 0;
-            transform: translateX(50%); /* لإخفاء نصف العنصر خارج الشاشة */
+            transform: translateX(50%); /* إخفاء نصف العنصر خارج الشاشة */
         }
 
         .flame {
             position: relative;
             width: 80%;
-            margin: 0 auto 3px auto; /* تقليل المسافة بين الشعلات */
-            height: 50px; /* حجم الشعلة الافتراضي للهاتف */
+            margin: 0 auto 1.5vw auto; /* مسافة نسبية بين الشعلات */
+            height: 8vw; /* ارتفاع الشعلة بالنسبة لعرض الشاشة */
+            max-height: 40px; /* حد أقصى للارتفاع */
             border-radius: 50% 50% 0 0;
             opacity: 0;
-            animation: ignite 2.5s infinite ease-out; /* تسريع بسيط */
-            filter: blur(4px); /* تقليل التمويه لأداء أفضل */
+            animation: ignite 2.5s infinite ease-out;
+            filter: blur(3px); /* تمويه أقل */
             transform-origin: bottom center;
             background: radial-gradient(circle at bottom, var(--fire-color-top) 0%, var(--fire-color-mid) 50%, var(--fire-color-base) 100%);
-            box-shadow: 0 0 10px var(--fire-color-base), 0 0 20px rgba(255, 165, 0, 0.5); /* تقليل الظل */
+            box-shadow: 0 0 8px var(--fire-color-base), 0 0 15px rgba(255, 165, 0, 0.4);
         }
-        .flame:nth-child(1) { animation-delay: 0s; height: 55px; }
-        .flame:nth-child(2) { animation-delay: 0.2s; height: 50px; }
-        .flame:nth-child(3) { animation-delay: 0.4s; height: 45px; }
-        .flame:nth-child(4) { animation-delay: 0.6s; height: 60px; }
-        .flame:nth-child(5) { animation-delay: 0.8s; height: 52px; }
+        .flame:nth-child(1) { animation-delay: 0s; height: 9vw; max-height: 45px; }
+        .flame:nth-child(2) { animation-delay: 0.2s; height: 8.5vw; max-height: 42px; }
+        .flame:nth-child(3) { animation-delay: 0.4s; height: 7.5vw; max-height: 38px; }
+        .flame:nth-child(4) { animation-delay: 0.6s; height: 9.5vw; max-height: 48px; }
+        .flame:nth-child(5) { animation-delay: 0.8s; height: 8vw; max-height: 40px; }
 
         @keyframes ignite {
             0% { transform: translateY(60px) scaleX(0.4) opacity(0); }
@@ -139,13 +143,15 @@
         /* ------------------------------------- */
         .explosion-side {
             position: fixed;
-            width: 120px; /* حجم افتراضي للموبايل */
-            height: 120px;
-            top: 15%; /* ارتفاع ثابت من الأعلى */
+            width: 25vw; /* حجم نسبي */
+            height: 25vw;
+            max-width: 150px; /* حد أقصى للحجم على الكمبيوتر */
+            max-height: 150px;
+            top: 15vh; /* ارتفاع نسبي */
             pointer-events: none;
             z-index: 15;
-            filter: drop-shadow(0 0 8px var(--explosion-color-base)); /* تقليل الظل */
-            overflow: hidden; /* لمنع الشرارات من الخروج */
+            filter: drop-shadow(0 0 6px var(--explosion-color-base)); /* ظل أخف */
+            overflow: hidden;
         }
         .explosion-left {
             left: 0;
@@ -158,13 +164,15 @@
 
         .spark {
             position: absolute;
-            width: 8px; /* حجم الشرارة الافتراضي */
-            height: 8px;
+            width: 1.5vw; /* حجم نسبي */
+            height: 1.5vw;
+            max-width: 8px; /* حد أقصى لحجم الشرارة */
+            max-height: 8px;
             background-color: var(--explosion-color-spark);
             border-radius: 50%;
             opacity: 0;
-            animation: explode-spark-infinite 1.8s ease-out infinite; /* تسريع بسيط */
-            box-shadow: 0 0 6px var(--explosion-color-spark), 0 0 12px var(--explosion-color-base); /* تقليل الظل */
+            animation: explode-spark-infinite 1.8s ease-out infinite;
+            box-shadow: 0 0 5px var(--explosion-color-spark), 0 0 10px var(--explosion-color-base);
         }
 
         @keyframes explode-spark-infinite {
@@ -179,7 +187,8 @@
         /* ------------------------------------- */
         .rocket-container {
             position: fixed;
-            width: 60px; /* حجم افتراضي للموبايل */
+            width: 12vw; /* عرض نسبي */
+            max-width: 60px; /* حد أقصى للعرض */
             height: 100vh;
             bottom: 0;
             z-index: 20;
@@ -200,51 +209,59 @@
 
         .rocket {
             position: absolute;
-            bottom: -100px; /* بدء الصاروخ من تحت الشاشة */
-            width: 25px; /* حجم الصاروخ الافتراضي */
-            height: 70px;
+            bottom: -100px;
+            width: 5vw; /* حجم نسبي */
+            height: 14vw;
+            max-width: 30px; /* حد أقصى للعرض */
+            max-height: 70px;
             background: linear-gradient(to bottom, var(--rocket-body) 0%, var(--rocket-body) 70%, #606060 100%);
-            border-radius: 5px 5px 2px 2px;
+            border-radius: 4px 4px 1px 1px; /* حواف أقل حدة */
             left: 50%;
-            transform: translateX(-50%); /* لمركزة الصاروخ داخل حاويته */
+            transform: translateX(-50%);
             opacity: 0;
-            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* ظل أخف */
+            box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
         }
         .rocket::before { /* مقدمة الصاروخ */
             content: '';
             position: absolute;
-            top: -12px;
+            top: -2.5vw; /* ارتفاع نسبي */
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 12.5px solid transparent;
-            border-right: 12.5px solid transparent;
-            border-bottom: 18px solid var(--rocket-tip);
-            border-radius: 2px;
+            border-left: 2.5vw solid transparent; /* حجم نسبي */
+            border-right: 2.5vw solid transparent;
+            border-bottom: 3.5vw solid var(--rocket-tip); /* حجم نسبي */
+            max-width: 15px; /* حد أقصى للحجم */
+            max-height: 20px;
+            border-radius: 1px;
         }
-        .rocket::after { /* زعانف الصاروخ - محاكاة بـbox-shadow */
-            content: ''; /* لازم يكون موجود حتى لو فارغ لاستخدام box-shadow */
-            position: absolute; /* ضروري لكي يعمل box-shadow */
+        .rocket::after { /* زعانف الصاروخ */
+            content: '';
+            position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             box-shadow:
-                -7px 5px 0 0 var(--rocket-fin), /* زعنفة وهمية يسار */
-                7px 5px 0 0 var(--rocket-fin);  /* زعنفة وهمية يمين */
+                -1.5vw 1vw 0 0 var(--rocket-fin), /* حجم نسبي */
+                1.5vw 1vw 0 0 var(--rocket-fin);
+            max-width: 8px; /* حد أقصى للحجم */
+            max-height: 5px;
         }
 
         .rocket-flame {
             position: absolute;
-            bottom: -25px;
+            bottom: -5vw; /* موضع نسبي */
             left: 50%;
             transform: translateX(-50%);
-            width: 20px; /* حجم شعلة الصاروخ */
-            height: 50px;
+            width: 4vw; /* حجم نسبي */
+            height: 10vw;
+            max-width: 25px; /* حد أقصى للحجم */
+            max-height: 50px;
             background: radial-gradient(circle at center top, var(--rocket-flame-color3) 0%, var(--rocket-flame-color2) 40%, var(--rocket-flame-color1) 80%, rgba(255, 0, 0, 0) 100%);
             border-radius: 50% 50% 10% 10%;
-            filter: blur(6px); /* تقليل التمويه */
+            filter: blur(5px); /* تمويه معتدل */
             opacity: 0.9;
             animation: rocket-flame-pulse 0.3s infinite alternate;
-            box-shadow: 0 0 15px var(--rocket-flame-color1), 0 0 30px var(--rocket-flame-color2); /* تقليل الظل */
+            box-shadow: 0 0 12px var(--rocket-flame-color1), 0 0 25px var(--rocket-flame-color2);
             transform-origin: center top;
         }
 
@@ -257,7 +274,7 @@
 
         @keyframes rocket-flame-pulse {
             0% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.9; }
-            50% { transform: translateX(-50%) scaleY(1.05) scaleX(0.95); opacity: 1; } /* حركة أخف */
+            50% { transform: translateX(-50%) scaleY(1.05) scaleX(0.95); opacity: 1; }
             100% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.9; }
         }
 
@@ -265,17 +282,17 @@
         /* 7. الحاوية الرئيسية للمحتوى (Container) */
         /* ------------------------------------- */
         .container {
-            background-color: rgba(0, 0, 0, 0.4);
-            padding: 40px 20px; /* تقليل البادينج الجانبي للهاتف */
+            background-color: rgba(0, 0, 0, 0.5); /* شفافية أكثر */
+            padding: 30px 20px; /* بادينج مناسب للهاتف */
             border-radius: var(--border-radius);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* ظل أخف */
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.4); /* ظل أخف */
             position: relative;
-            z-index: 30; /* أعلى z-index لضمان ظهور المحتوى */
+            z-index: 30;
             animation: fadeIn 1s ease-out forwards;
-            max-width: 95%; /* زيادة العرض على الشاشات الصغيرة */
-            width: 450px; /* عرض افتراضي للكمبيوتر */
+            width: 90vw; /* عرض نسبي كبير للهاتف */
+            max-width: 400px; /* حد أقصى للعرض لكي لا يصبح ضخماً جداً على الكمبيوتر */
             box-sizing: border-box;
-            border: 1px solid rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.15); /* حدود أوضح */
         }
 
         @keyframes fadeIn {
@@ -284,10 +301,11 @@
         }
 
         h1 {
-            font-size: 2em;
+            font-size: 6vw; /* حجم خط نسبي */
             margin-bottom: 20px;
             color: var(--primary-color);
-            text-shadow: 0 0 8px rgba(76, 175, 80, 0.4); /* ظل أخف */
+            text-shadow: 0 0 6px rgba(76, 175, 80, 0.3); /* ظل أخف */
+            line-height: 1.2; /* تباعد أسطر مناسب */
         }
 
         h1 strong {
@@ -295,7 +313,7 @@
         }
 
         .content-area {
-            min-height: 120px; /* تقليل الارتفاع */
+            min-height: 120px;
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -304,38 +322,39 @@
 
         .loader-wrapper {
             position: relative;
-            width: 80px; /* حجم اللودر الافتراضي */
-            height: 80px;
-            margin: 25px auto;
+            width: 20vw; /* حجم نسبي */
+            height: 20vw;
+            max-width: 80px; /* حد أقصى للحجم */
+            max-height: 80px;
+            margin: 20px auto;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .loader {
-            border: 6px solid rgba(255, 255, 255, 0.2);
-            border-top: 6px solid var(--secondary-color);
+            border: 1.5vw solid rgba(255, 255, 255, 0.2); /* حجم نسبي للحدود */
+            border-top: 1.5vw solid var(--secondary-color);
+            max-width: 70px; /* حد أقصى للحجم */
+            max-height: 70px;
             border-radius: 50%;
-            width: 70px;
-            height: 70px;
+            width: 18vw;
+            height: 18vw;
             animation: spin var(--animation-speed) linear infinite;
             position: absolute;
         }
 
         .loader-text {
-            font-size: 1.1em;
+            font-size: 4vw; /* حجم خط نسبي */
+            max-font-size: 1.1em; /* حد أقصى للحجم */
             color: var(--text-color);
             position: absolute;
             font-weight: bold;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
         .main-text {
-            font-size: 1em;
+            font-size: 4.2vw; /* حجم خط نسبي */
+            max-font-size: 1em; /* حد أقصى للحجم */
             line-height: 1.5;
             opacity: 0.9;
             margin-top: 20px;
@@ -344,7 +363,8 @@
 
         .message-display {
             display: none;
-            font-size: 1.6em;
+            font-size: 6.5vw; /* حجم خط نسبي */
+            max-font-size: 1.6em; /* حد أقصى للحجم */
             color: var(--primary-color);
             font-weight: 700;
             margin-top: 25px;
@@ -352,13 +372,14 @@
         }
         .message-display p {
             margin: 0;
-            font-size: 1em;
+            font-size: 1em; /* يستخدم الحجم النسبي للعنصر الأم */
         }
 
         .additional-info {
             margin-top: 15px;
             color: rgba(255, 255, 255, 0.8);
-            font-size: 0.9em;
+            font-size: 3.5vw; /* حجم خط نسبي */
+            max-font-size: 0.9em; /* حد أقصى للحجم */
             line-height: 1.4;
         }
 
@@ -391,54 +412,29 @@
         }
 
         /* ------------------------------------- */
-        /* 8. التعديلات المتجاوبة (Responsive) */
+        /* 8. التعديلات المتجاوبة للشاشات الأكبر (Desktop/Tablet) */
         /* ------------------------------------- */
 
-        /* لشاشات التابلت وما شابه (من 601px إلى 900px) */
-        @media (min-width: 601px) and (max-width: 900px) {
+        @media (min-width: 601px) {
             .container {
-                padding: 45px 30px;
-                width: 70%;
-            }
-            .fire-effect {
-                width: 120px;
-            }
-            .explosion-side {
-                width: 180px;
-                height: 180px;
-            }
-            .spark {
-                width: 10px;
-                height: 10px;
-            }
-            .rocket-container {
-                width: 80px;
-            }
-            .rocket {
-                width: 35px;
-                height: 90px;
-            }
-            .rocket::before {
-                top: -18px;
-                border-left: 17.5px solid transparent;
-                border-right: 17.5px solid transparent;
-                border-bottom: 25px solid var(--rocket-tip);
-            }
-            .rocket-flame {
-                width: 30px;
-                height: 70px;
-                bottom: -35px;
-            }
-        }
-
-        /* للشاشات الكبيرة (أكثر من 900px) */
-        @media (min-width: 901px) {
-            .container {
-                padding: 50px;
-                width: 500px;
+                padding: 45px 40px;
+                width: 60vw; /* لتوسيع العرض قليلاً على التابلت */
+                max-width: 500px; /* العودة للحد الأقصى على الكمبيوتر */
             }
             h1 {
-                font-size: 2.2em;
+                font-size: 2.2em; /* العودة لأحجام الخط المطلقة للكمبيوتر */
+            }
+            .loader-wrapper {
+                width: 100px;
+                height: 100px;
+            }
+            .loader {
+                border-width: 8px;
+                width: 80px;
+                height: 80px;
+            }
+            .loader-text {
+                font-size: 1.2em;
             }
             .main-text {
                 font-size: 1.1em;
@@ -450,28 +446,31 @@
                 font-size: 0.95em;
             }
 
+            /* تعديل أحجام الأنميشنات للكمبيوتر */
             .fire-effect {
-                width: 150px;
+                width: 120px; /* عرض ثابت أكبر */
             }
             .flame {
-                height: 70px;
-                filter: blur(6px);
+                height: 60px; /* ارتفاع ثابت أكبر */
+                filter: blur(5px);
+                margin: 0 auto 5px auto;
             }
-            @keyframes ignite {
-                0% { transform: translateY(100px) scaleX(0.4) opacity(0); }
-                20% { transform: translateY(0) scaleX(0.9) opacity: 0.8); }
-                70% { transform: translateY(-70px) scaleX(0.7) opacity: 0.5); }
-                100% { transform: translateY(-150px) scaleX(0.5) opacity: 0); }
+            @keyframes ignite { /* يمكن تعديل القيم إذا بدت الحركة سريعة جداً مع الأحجام الأكبر */
+                0% { transform: translateY(80px) scaleX(0.4) opacity(0); }
+                20% { transform: translateY(0) scaleX(0.9) opacity(0.8); }
+                70% { transform: translateY(-50px) scaleX(0.7) opacity: 0.5; }
+                100% { transform: translateY(-100px) scaleX(0.5) opacity: 0; }
             }
 
             .explosion-side {
                 width: 200px;
                 height: 200px;
-                top: 20%;
+                top: 20vh;
             }
             .spark {
-                width: 12px;
-                height: 12px;
+                width: 10px;
+                height: 10px;
+                box-shadow: 0 0 8px var(--explosion-color-spark), 0 0 15px var(--explosion-color-base);
             }
             @keyframes explode-spark-infinite {
                 0% { opacity: 0; transform: translate(0, 0) scale(0.2); }
@@ -481,22 +480,27 @@
             }
 
             .rocket-container {
-                width: 90px;
+                width: 80px;
             }
             .rocket {
-                width: 40px;
-                height: 100px;
+                width: 35px;
+                height: 90px;
             }
             .rocket::before {
-                top: -20px;
-                border-left: 20px solid transparent;
-                border-right: 20px solid transparent;
-                border-bottom: 28px solid var(--rocket-tip);
+                top: -15px;
+                border-left: 17.5px solid transparent;
+                border-right: 17.5px solid transparent;
+                border-bottom: 25px solid var(--rocket-tip);
+            }
+            .rocket::after {
+                box-shadow:
+                    -8px 5px 0 0 var(--rocket-fin),
+                    8px 5px 0 0 var(--rocket-fin);
             }
             .rocket-flame {
-                width: 35px;
-                height: 80px;
-                bottom: -40px;
+                width: 30px;
+                height: 70px;
+                bottom: -35px;
             }
             @keyframes launch-rocket {
                 0% { bottom: -150px; opacity: 0; transform: translateX(-50%) scale(0.7); }
@@ -586,23 +590,23 @@
         // إضافة ديناميكية لجسيمات الخلفية
         function createBackgroundParticles() {
             const particlesContainer = document.querySelector('.background-particles');
-            const numParticles = 60; // تقليل العدد لأداء أفضل
+            const numParticles = 50; // تقليل العدد أكثر لأداء أفضل على الهواتف
 
             for (let i = 0; i < numParticles; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
                 
-                const size = Math.random() * 4 + 1; // حجم أصغر
+                const size = Math.random() * 3 + 1; // حجم أصغر
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 
                 const startX = Math.random() * 100;
                 particle.style.left = `${startX}vw`;
                 
-                const duration = Math.random() * 7 + 4; // مدة أقصر قليلاً
+                const duration = Math.random() * 6 + 3; // مدة أقصر قليلاً
                 particle.style.animationDuration = `${duration}s`;
                 
-                const delay = Math.random() * 4; // تأخير أقصر
+                const delay = Math.random() * 3; // تأخير أقصر
                 particle.style.animationDelay = `${delay}s`;
 
                 particlesContainer.appendChild(particle);
@@ -610,7 +614,7 @@
         }
 
         // إنشاء الشرارات ديناميكيًا للمفرقعات
-        function createSparks(explosionElement, num = 15) { // تقليل عدد الشرارات قليلاً
+        function createSparks(explosionElement, num = 12) { // تقليل عدد الشرارات قليلاً جداً
             while (explosionElement.firstChild) {
                 explosionElement.removeChild(explosionElement.firstChild);
             }
@@ -620,11 +624,11 @@
                 explosionElement.appendChild(spark);
 
                 const angle = Math.random() * 360;
-                const distance = Math.random() * 70 + 40; // مسافة انتشار أقل
+                const distance = Math.random() * 60 + 30; // مسافة انتشار أقل
 
                 spark.style.setProperty('--angle', angle);
                 spark.style.setProperty('--distance', distance);
-                spark.style.animationDelay = `${Math.random() * 0.8}s`; // تأخير أقصر
+                spark.style.animationDelay = `${Math.random() * 0.7}s`;
             }
         }
 
@@ -664,14 +668,14 @@
                     if (rocketLeft) {
                         rocketLeft.style.animation = 'launch-rocket 5s linear infinite';
                         rocketLeft.style.animationDelay = '0s';
-                        rocketLeftContainer.style.display = 'flex'; // تأكد من إظهار الحاوية
+                        rocketLeftContainer.style.display = 'flex';
                     }
 
                     const rocketRight = rocketRightContainer.querySelector('.rocket');
                     if (rocketRight) {
                         rocketRight.style.animation = 'launch-rocket 5s linear infinite';
                         rocketRight.style.animationDelay = '2.5s';
-                        rocketRightContainer.style.display = 'flex'; // تأكد من إظهار الحاوية
+                        rocketRightContainer.style.display = 'flex';
                     }
                     
                     playFireworkSound();
@@ -684,8 +688,8 @@
         // بدء العملية تلقائياً عند تحميل محتوى DOM بالكامل
         document.addEventListener('DOMContentLoaded', () => {
             createBackgroundParticles();
-            createSparks(explosionLeft, 15);
-            createSparks(explosionRight, 15);
+            createSparks(explosionLeft, 12);
+            createSparks(explosionRight, 12);
             startIpChangeProcess();
         });
     </script>
