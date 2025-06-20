@@ -31,9 +31,9 @@
             /* ألوان المفرقعات */
             --explosion-color-base: #ff8c00;
             --explosion-color-spark: #ff4500;
-            /* زيادة عرض حاوية المفرقعات */
-            --explosion-container-width-mobile: 40vw; /* زاد من 30vw */
-            --explosion-container-width-desktop: 250px; /* زاد من 180px */
+            /* حجم حاوية المفرقعات (هذا هو الحجم الفعلي للعنصر الذي سيتم تحريكه) */
+            --explosion-item-size-mobile: 40vw; /* حجم المفرقعة على الهاتف */
+            --explosion-item-size-desktop: 250px; /* حجم المفرقعة على الكمبيوتر */
 
             /* ألوان الصواريخ */
             --rocket-body: #a0a0a0;
@@ -42,9 +42,9 @@
             --rocket-flame-color1: #ff4500;
             --rocket-flame-color2: #ffd700;
             --rocket-flame-color3: #ffffff;
-            /* زيادة عرض حاوية الصاروخ */
-            --rocket-container-width-mobile: 20vw; /* زاد من 15vw */
-            --rocket-container-width-desktop: 120px; /* زاد من 90px */
+            /* حجم حاوية الصاروخ (هذا هو الحجم الفعلي للعنصر الذي سيتم تحريكه) */
+            --rocket-item-width-mobile: 20vw; /* عرض حاوية الصاروخ على الهاتف */
+            --rocket-item-width-desktop: 120px; /* عرض حاوية الصاروخ على الكمبيوتر */
         }
 
         /* ------------------------------------- */
@@ -98,9 +98,10 @@
         /* ------------------------------------- */
         .fire-effect {
             position: fixed;
-            width: 15vw; /* العرض بالنسبة لعرض الشاشة */
-            min-width: 60px; /* حجم أدنى لضمان عدم اختفائها */
-            max-width: 80px; /* حد أقصى للعرض لكي لا تصبح ضخمة على شاشات الكمبيوتر */
+            /* Fire effect width is kept the same for a natural overflow appearance */
+            width: 15vw;
+            min-width: 60px;
+            max-width: 80px;
             height: 100vh;
             bottom: 0;
             z-index: 5;
@@ -111,12 +112,19 @@
         }
         .fire-left {
             left: 0;
-            transform: translateX(-50%);
+            /* Adjust margin to pull half of the fire effect out of view */
+            margin-left: calc(-0.5 * var(--fire-effect-width, 15vw)); /* Assuming a variable or default value */
         }
         .fire-right {
             right: 0;
-            transform: translateX(50%);
+            /* Adjust margin to pull half of the fire effect out of view */
+            margin-right: calc(-0.5 * var(--fire-effect-width, 15vw)); /* Assuming a variable or default value */
         }
+        /* Define --fire-effect-width for calc to work, or use direct width */
+        .fire-left, .fire-right {
+            --fire-effect-width: 15vw; /* Define for mobile */
+        }
+
 
         .flame {
             position: relative;
@@ -147,34 +155,34 @@
         }
 
         /* ------------------------------------- */
-        /* 5. تأثير الانفجار (Fireworks) - تم زيادة عرض الحاوية */
+        /* 5. تأثير الانفجار (Fireworks) - تعديل جذرى على المحاذاة */
         /* ------------------------------------- */
         .explosion-side {
             position: fixed;
-            width: var(--explosion-container-width-mobile); /* تم زيادة العرض */
-            height: var(--explosion-container-width-mobile); /* تم زيادة العرض */
+            width: var(--explosion-item-size-mobile); /* الحجم الفعلي للحاوية */
+            height: var(--explosion-item-size-mobile);
             min-width: 100px;
             min-height: 100px;
-            max-width: var(--explosion-container-width-desktop); /* تم زيادة العرض */
-            max-height: var(--explosion-container-width-desktop); /* تم زيادة العرض */
+            max-width: var(--explosion-item-size-desktop);
+            max-height: var(--explosion-item-size-desktop);
             top: 10vh;
             pointer-events: none;
             z-index: 15;
             filter: drop-shadow(0 0 6px var(--explosion-color-base));
-            overflow: hidden;
+            overflow: hidden; /* للحفاظ على الأنميشنات داخلها */
             display: flex;
             justify-content: center;
             align-items: center;
         }
         .explosion-left {
             left: 0;
-            /* العودة لـ -50% لمركزة العنصر على الحافة */
-            transform: translateX(-50%);
+            /* سحب العنصر للخارج بمقدار نصف عرضه لكي يظهر نصفه فقط داخل الشاشة */
+            margin-left: calc(-0.5 * var(--explosion-item-size-mobile));
         }
         .explosion-right {
             right: 0;
-            /* العودة لـ 50% لمركزة العنصر على الحافة */
-            transform: translateX(50%);
+            /* سحب العنصر للخارج بمقدار نصف عرضه لكي يظهر نصفه فقط داخل الشاشة */
+            margin-right: calc(-0.5 * var(--explosion-item-size-mobile));
         }
 
         .spark {
@@ -200,11 +208,11 @@
         }
 
         /* ------------------------------------- */
-        /* 6. تأثير الصواريخ (Rockets) - تم زيادة عرض الحاوية */
+        /* 6. تأثير الصواريخ (Rockets) - تعديل جذرى على المحاذاة */
         /* ------------------------------------- */
         .rocket-container {
             position: fixed;
-            width: var(--rocket-container-width-mobile); /* تم زيادة العرض */
+            width: var(--rocket-item-width-mobile); /* الحجم الفعلي للحاوية */
             height: 100vh;
             bottom: 0;
             z-index: 20;
@@ -212,17 +220,17 @@
             display: flex;
             justify-content: center;
             align-items: flex-end;
-            overflow: hidden;
+            overflow: hidden; /* للحفاظ على الأنميشنات داخلها */
         }
         .rocket-left {
             left: 0;
-            /* العودة لـ -50% لمركزة العنصر على الحافة */
-            transform: translateX(-50%);
+            /* سحب العنصر للخارج بمقدار نصف عرضه لكي يظهر نصفه فقط داخل الشاشة */
+            margin-left: calc(-0.5 * var(--rocket-item-width-mobile));
         }
         .rocket-right {
             right: 0;
-            /* العودة لـ 50% لمركزة العنصر على الحافة */
-            transform: translateX(50%);
+            /* سحب العنصر للخارج بمقدار نصف عرضه لكي يظهر نصفه فقط داخل الشاشة */
+            margin-right: calc(-0.5 * var(--rocket-item-width-mobile));
         }
 
         .rocket {
@@ -478,28 +486,34 @@
             .fire-effect {
                 width: 120px;
             }
+            /* تحديد عرض النار لـ calc */
+            .fire-left, .fire-right {
+                --fire-effect-width: 120px; /* Define for desktop */
+            }
             .flame {
                 height: 60px;
                 filter: blur(5px);
                 margin: 0 auto 5px auto;
             }
+            /* Fire effect positioning for desktop */
             .fire-left {
-                transform: translateX(-50%);
+                margin-left: calc(-0.5 * var(--fire-effect-width));
             }
             .fire-right {
-                transform: translateX(50%);
+                margin-right: calc(-0.5 * var(--fire-effect-width));
             }
 
+
             .explosion-side {
-                width: var(--explosion-container-width-desktop); /* استخدام المتغير الجديد */
-                height: var(--explosion-container-width-desktop); /* استخدام المتغير الجديد */
+                width: var(--explosion-item-size-desktop);
+                height: var(--explosion-item-size-desktop);
                 top: 20vh;
             }
             .explosion-left {
-                transform: translateX(-50%);
+                margin-left: calc(-0.5 * var(--explosion-item-size-desktop));
             }
             .explosion-right {
-                transform: translateX(50%);
+                margin-right: calc(-0.5 * var(--explosion-item-size-desktop));
             }
             .spark {
                 width: 10px;
@@ -509,13 +523,13 @@
 
 
             .rocket-container {
-                width: var(--rocket-container-width-desktop); /* استخدام المتغير الجديد */
+                width: var(--rocket-item-width-desktop);
             }
             .rocket-left {
-                transform: translateX(-50%);
+                margin-left: calc(-0.5 * var(--rocket-item-width-desktop));
             }
             .rocket-right {
-                transform: translateX(50%);
+                margin-right: calc(-0.5 * var(--rocket-item-width-desktop));
             }
             .rocket {
                 width: 35px;
