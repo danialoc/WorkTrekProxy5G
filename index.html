@@ -47,19 +47,19 @@
             margin: 0;
             text-align: center;
             position: relative;
-            overflow: hidden; /* تم تغييرها من overflow-x: hidden; overflow-y: auto; */
+            overflow: hidden; /* لمنع ظهور أشرطة التمرير */
         }
 
         /* الجسيمات الخلفية */
         .background-particles {
-            position: fixed; /* تم التأكد من أنها fixed لتغطي الشاشة بالكامل */
+            position: fixed;
             width: 100%;
             height: 100%;
             top: 0;
             left: 0;
             z-index: 0;
-            overflow: hidden;
             pointer-events: none;
+            overflow: hidden; /* لضمان عدم ظهور الجسيمات خارج الحاوية */
         }
 
         .particle {
@@ -69,8 +69,6 @@
             animation: moveParticles linear infinite;
         }
 
-        /* ستتم إضافة الجسيمات ديناميكياً بواسطة JavaScript */
-
         @keyframes moveParticles {
             0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.5; }
             100% { transform: translateY(-100vh) translateX(50vw) scale(1.5); opacity: 0; }
@@ -79,22 +77,22 @@
         /* تأثير النار */
         .fire-effect {
             position: fixed;
-            width: 150px;
-            height: 100vh; /* لتغطي ارتفاع الشاشة بالكامل */
+            width: 150px; /* عرض مناسب على الكمبيوتر */
+            height: 100vh;
             bottom: 0;
-            z-index: 5; /* لتبقى خلف المحتوى الرئيسي */
+            z-index: 5;
             display: flex;
-            flex-direction: column-reverse; /* لتبدأ الشعلات من الأسفل */
+            flex-direction: column-reverse;
             pointer-events: none;
             overflow: hidden;
         }
         .fire-left {
-            left: -50px; /* لتبدأ من خارج الشاشة قليلاً */
-            transform: none; /* إزالة الـ translateX الزائدة */
+            left: -5vw; /* بدء من 5% من عرض الشاشة من اليسار */
+            right: auto; /* التأكد من عدم تضارب الخصائص */
         }
         .fire-right {
-            right: -50px; /* لتبدأ من خارج الشاشة قليلاً */
-            transform: none; /* إزالة الـ translateX الزائدة */
+            right: -5vw; /* بدء من 5% من عرض الشاشة من اليمين */
+            left: auto; /* التأكد من عدم تضارب الخصائص */
         }
 
         .flame {
@@ -110,7 +108,6 @@
             background: radial-gradient(circle at bottom, var(--fire-color3) 0%, var(--fire-color2) 50%, var(--fire-color1) 100%);
             box-shadow: 0 0 15px var(--fire-color1), 0 0 30px rgba(255, 165, 0, 0.5);
         }
-        /* الأنماط الفردية للشعلات لتحريكها بشكل مختلف */
         .flame:nth-child(1) { animation-delay: 0s; height: 80px; }
         .flame:nth-child(2) { animation-delay: 0.3s; height: 75px; }
         .flame:nth-child(3) { animation-delay: 0.6s; height: 70px; }
@@ -120,33 +117,31 @@
         @keyframes ignite {
             0% { transform: translateY(100px) scaleX(0.4) opacity(0); }
             20% { transform: translateY(0) scaleX(0.9) opacity(0.8); }
-            70% { transform: translateY(-70px) scaleX(0.7) opacity(0.5); }
-            100% { transform: translateY(-150px) scaleX(0.5) opacity(0); }
+            70% { transform: translateY(-70px) scaleX(0.7) opacity: 0.5; }
+            100% { transform: translateY(-150px) scaleX(0.5) opacity: 0; }
         }
 
-        /* تأثير الانفجار (المفرقعات) - حاوية عامة للجانبين */
+        /* تأثير الانفجار (المفرقعات) */
         .explosion-side {
-            position: fixed; /* تم التأكد من أنها fixed */
+            position: fixed;
             width: var(--explosion-size);
             height: var(--explosion-size);
-            top: 20%; /* يمكن تعديل هذا الارتفاع حسب الرغبة */
+            top: 20%; /* ارتفاع ثابت من الأعلى */
             pointer-events: none;
-            z-index: 15; /* لتبقى أعلى من النار والمحتوى الرئيسي */
-            /* display: none;  هذا سيتم التحكم به بواسطة JS */
+            z-index: 15;
             filter: drop-shadow(0 0 10px var(--explosion-color1));
-            overflow: hidden; /* لمنع تجاوز الشرارات */
+            overflow: hidden;
+            /* display: none; سيتم التحكم به بواسطة JS */
         }
 
-        /* تحديد موقع حاوية الانفجار اليسرى */
         .explosion-left {
-            left: -30px; /* لتبدأ من خارج الشاشة قليلاً */
-            transform: none; /* إزالة الـ translateX الزائدة */
+            left: 5vw; /* بدء من 5% من عرض الشاشة من اليسار */
+            right: auto;
         }
 
-        /* تحديد موقع حاوية الانفجار اليمنى */
         .explosion-right {
-            right: -30px; /* لتبدأ من خارج الشاشة قليلاً */
-            left: auto; /* مهم لإلغاء conflict مع 'left' إذا كانت موجودة */
+            right: 5vw; /* بدء من 5% من عرض الشاشة من اليمين */
+            left: auto;
         }
 
         .spark {
@@ -160,7 +155,6 @@
             box-shadow: 0 0 8px var(--explosion-color2), 0 0 15px var(--explosion-color1);
         }
 
-        /* سيتم إنشاء الشرارات ديناميكياً بواسطة JavaScript */
         @keyframes explode-spark-infinite {
             0% {
                 opacity: 0;
@@ -185,31 +179,30 @@
 
         /* تأثير الصواريخ - START */
         .rocket-container {
-            position: fixed; /* تم التأكد من أنها fixed */
-            width: 70px;
-            height: 100vh; /* لتغطية ارتفاع الشاشة بالكامل */
+            position: fixed;
+            width: 70px; /* عرض الصاروخ على الكمبيوتر */
+            height: 100vh;
             bottom: 0;
-            z-index: 20; /* لتبقى أعلى من كل شيء آخر ما عدا المحتوى الرئيسي */
+            z-index: 20;
             pointer-events: none;
-            /* display: none; /* هذا سيتم التحكم به بواسطة JS */
-            overflow: hidden; /* لمنع تجاوز الصاروخ */
-            display: flex; /* لتحسين تمركز الصواريخ */
-            justify-content: center;
-            align-items: flex-end; /* لتبدأ الصواريخ من الأسفل */
+            display: flex;
+            justify-content: center; /* لمركزة الصاروخ داخل الحاوية */
+            align-items: flex-end; /* لبدء الصاروخ من الأسفل */
+            overflow: hidden;
+            /* animation: launch-rocket 5s linear infinite; سيتم التحكم به في JS */
         }
 
         .rocket-left {
-            left: 5%;
-            animation: launch-rocket 5s linear infinite; /* إضافة الأنميشن هنا */
+            left: 10vw; /* بدء من 10% من عرض الشاشة من اليسار */
+            right: auto;
         }
         .rocket-right {
-            right: 5%;
-            animation: launch-rocket 5s linear infinite; /* إضافة الأنميشن هنا */
-            animation-delay: 2.5s; /* لتأخير الصاروخ الثاني */
+            right: 10vw; /* بدء من 10% من عرض الشاشة من اليمين */
+            left: auto;
         }
 
         .rocket {
-            position: absolute; /* ليتم التحكم بـ bottom بواسطة الأنميشن */
+            position: absolute;
             bottom: -150px; /* بدء الصاروخ من تحت الشاشة */
             width: 30px;
             height: 80px;
@@ -217,9 +210,9 @@
             border-radius: 5px 5px 2px 2px;
             left: 50%;
             transform: translateX(-50%);
-            /* animation: launch-rocket 5s linear infinite; // تم نقلها إلى rocket-container */
             opacity: 0;
             box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            /* animation: launch-rocket 5s linear infinite; // سيتم تطبيقه على العنصر نفسه بواسطة JS */
         }
 
         /* مقدمة الصاروخ */
@@ -237,21 +230,7 @@
             border-radius: 2px;
         }
 
-        /* زعانف الصاروخ (على الجانبين) - ملاحظة: استخدام ::after لزعنفة واحدة فقط. لزعانف متعددة، استخدم divs داخلية. */
-        .rocket::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: -8px; /* لتحريكها لتبدو كزعنفة جانبية */
-            width: 10px; /* عرض الزعنفة */
-            height: 30px; /* طول الزعنفة */
-            background-color: var(--rocket-fin-color);
-            transform-origin: bottom center;
-            transform: skewY(20deg); /* لجعلها مائلة قليلاً */
-            border-radius: 2px 0 0 2px;
-        }
-        /* إضافة زعنفة أخرى على الجانب الآخر (باستخدام عنصر وهمي آخر قد يتطلب حل JS أو HTML إضافي) */
-        /* حاليا، لنضيف واحدة إضافية بـ box-shadow لمحاكاة الزعانف */
+        /* زعانف الصاروخ (باستخدام box-shadow لمحاكاة زعانف جانبية بسيطة) */
         .rocket {
             position: absolute;
             /* ... خصائص أخرى ... */
@@ -260,17 +239,10 @@
                 -8px 5px 0 0 var(--rocket-fin-color), /* زعنفة وهمية يسار */
                 8px 5px 0 0 var(--rocket-fin-color); /* زعنفة وهمية يمين */
         }
+        /* إخفاء pseudo-element ::after الذي كان يستخدم لزعنفة واحدة */
         .rocket::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 50%;
-            transform: translateX(-50%); /* إعادة ضبط لكي لا تؤثر على شكل الصاروخ */
-            width: 0; height: 0; /* لإخفاء الزعنفة الأصلية إذا تم استخدام box-shadow */
-            background: none; /* إخفاء الخلفية */
-            border: none; /* إخفاء الحدود */
+            content: none;
         }
-
 
         .rocket-flame {
             position: absolute;
@@ -315,10 +287,6 @@
             50% { transform: translateX(-50%) scaleY(1.1) scaleX(0.9); opacity: 1; }
             100% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.9; }
         }
-
-        /* تم إزالة .rocket:nth-child(N) لتطبيق الأنميشن على .rocket-container والتحكم في delay عبر JS */
-
-        /* تأثير الصواريخ - END */
 
         /* تنسيقات الحاوية الرئيسية */
         .container {
@@ -481,9 +449,15 @@
             }
             /* تعديل تأثيرات النار على الموبايل */
             .fire-effect {
-                width: 120px; /* زيادة عرض حاوية النار */
-                left: -20px; /* تعديل الموضع */
-                right: -20px;
+                width: 100px; /* عرض مناسب للموبايل */
+                left: 0; /* بدء من حافة الشاشة */
+                right: 0; /* بدء من حافة الشاشة */
+            }
+            .fire-left {
+                left: 0;
+            }
+            .fire-right {
+                right: 0;
             }
             .flame {
                 height: 60px; /* تقليل ارتفاع الشعلات قليلاً */
@@ -492,27 +466,24 @@
             @keyframes ignite {
                 0% { transform: translateY(80px) scaleX(0.4) opacity(0); }
                 20% { transform: translateY(0) scaleX(0.9) opacity(0.8); }
-                70% { transform: translateY(-50px) scaleX(0.7) opacity(0.5); }
-                100% { transform: translateY(-100px) scaleX(0.5) opacity(0); }
+                70% { transform: translateY(-50px) scaleX(0.7) opacity: 0.5; }
+                100% { transform: translateY(-100px) scaleX(0.5) opacity: 0; }
             }
 
             /* تعديل المفرقعات على الموبايل */
             .explosion-side {
-                width: 140px; /* زيادة حجم المفرقعات قليلاً لتكون أوضح */
-                height: 140px;
-                top: 15%; /* تعديل الارتفاع */
-                left: -20px; /* تعديل الموضع */
-                right: -20px;
+                width: 120px; /* حجم المفرقعات */
+                height: 120px;
+                top: 15%; /* ارتفاع ثابت من الأعلى */
             }
             .explosion-left {
-                left: -20px;
+                left: 0;
             }
             .explosion-right {
-                right: -20px;
-                left: auto; /* مهم للتأكد من عدم التضارب */
+                right: 0;
             }
             .spark {
-                width: 10px; /* حجم الشرارة */
+                width: 10px;
                 height: 10px;
                 box-shadow: 0 0 6px var(--explosion-color2), 0 0 12px var(--explosion-color1);
             }
@@ -525,7 +496,7 @@
 
             /* تعديل الصواريخ على الموبايل */
             .rocket-container {
-                width: 60px; /* زيادة عرض حاوية الصواريخ */
+                width: 50px; /* عرض مناسب للموبايل */
                 height: 100vh;
             }
             .rocket-left {
@@ -535,19 +506,19 @@
                 right: 0;
             }
             .rocket {
-                width: 25px; /* حجم الصاروخ */
-                height: 70px;
+                width: 20px; /* حجم الصاروخ */
+                height: 60px;
             }
             .rocket::before { /* مقدمة الصاروخ */
-                top: -12px;
-                border-left: 12px solid transparent;
-                border-right: 12px solid transparent;
-                border-bottom: 18px solid var(--rocket-tip-color);
+                top: -10px;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-bottom: 15px solid var(--rocket-tip-color);
             }
             .rocket-flame {
-                width: 20px; /* حجم شعلة الصاروخ */
-                height: 50px;
-                bottom: -25px;
+                width: 15px; /* حجم شعلة الصاروخ */
+                height: 40px;
+                bottom: -20px;
                 filter: blur(6px);
             }
         }
@@ -570,41 +541,37 @@
                 font-size: 0.8em;
             }
             .fire-effect {
-                width: 100px;
-                left: -30px;
-                right: -30px;
+                width: 80px; /* تصغير أكثر للنار */
             }
             .flame {
-                height: 50px;
+                height: 40px;
             }
             .explosion-side {
-                width: 120px;
-                height: 120px;
-                top: 12%;
-                left: -20px;
-                right: -20px;
+                width: 100px; /* تصغير أكثر للمفرقعات */
+                height: 100px;
+                top: 10%;
             }
             .spark {
-                width: 8px;
-                height: 8px;
+                width: 6px;
+                height: 6px;
             }
             .rocket-container {
-                width: 50px;
+                width: 40px; /* تصغير أكثر للصواريخ */
             }
             .rocket {
-                width: 20px;
-                height: 60px;
+                width: 18px;
+                height: 50px;
             }
             .rocket::before {
-                top: -10px;
-                border-left: 10px solid transparent;
-                border-right: 10px solid transparent;
-                border-bottom: 15px solid var(--rocket-tip-color);
+                top: -8px;
+                border-left: 9px solid transparent;
+                border-right: 9px solid transparent;
+                border-bottom: 12px solid var(--rocket-tip-color);
             }
             .rocket-flame {
-                width: 15px;
-                height: 40px;
-                bottom: -20px;
+                width: 12px;
+                height: 30px;
+                bottom: -15px;
             }
         }
     </style>
@@ -638,13 +605,13 @@
         <div class="rocket">
             <div class="rocket-flame"></div>
         </div>
-        </div>
+    </div>
 
     <div class="rocket-container rocket-right" id="rocketRight" style="display: none;">
         <div class="rocket">
             <div class="rocket-flame"></div>
         </div>
-        </div>
+    </div>
 
     <div class="container">
         <h1><strong>worktrekproxy5G</strong></h1>
@@ -681,103 +648,110 @@
         const ipChangeFrame = document.getElementById('ipChangeFrame');
         const explosionLeft = document.getElementById('explosionLeft');
         const explosionRight = document.getElementById('explosionRight');
-        const rocketLeft = document.getElementById('rocketLeft');
-        const rocketRight = document.getElementById('rocketRight');
+        const rocketLeftContainer = document.getElementById('rocketLeft'); // غيرت الاسم لتوضيح أنه الحاوية
+        const rocketRightContainer = document.getElementById('rocketRight'); // غيرت الاسم لتوضيح أنه الحاوية
         const fireworkSound = document.getElementById('fireworkSound');
 
-        // إضافة ديناميكية لجسيمات الخلفية والشرارات
-        document.addEventListener('DOMContentLoaded', () => {
+        // إضافة ديناميكية لجسيمات الخلفية
+        function createBackgroundParticles() {
             const particlesContainer = document.querySelector('.background-particles');
-            const numParticles = 80; // عدد الجسيمات الخلفية
+            const numParticles = 80;
 
             for (let i = 0; i < numParticles; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
                 
-                const size = Math.random() * 5 + 2; // Particle size 2-7px
+                const size = Math.random() * 5 + 2;
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 
-                const startX = Math.random() * 100; // Start across the full width
+                const startX = Math.random() * 100;
                 particle.style.left = `${startX}vw`;
                 
-                const duration = Math.random() * 8 + 5; // Animation duration 5-13s
+                const duration = Math.random() * 8 + 5;
                 particle.style.animationDuration = `${duration}s`;
                 
-                const delay = Math.random() * 5; // Animation delay 0-5s
+                const delay = Math.random() * 5;
                 particle.style.animationDelay = `${delay}s`;
 
                 particlesContainer.appendChild(particle);
             }
+        }
 
-            // إنشاء الشرارات ديناميكيًا للمفرقعات
-            function createSparks(explosionElement, num = 12) { // استخدام عدد الشرارات الافتراضي 12
-                for (let i = 0; i < num; i++) {
-                    const spark = document.createElement('div');
-                    spark.classList.add('spark');
-                    explosionElement.appendChild(spark);
+        // إنشاء الشرارات ديناميكيًا للمفرقعات
+        function createSparks(explosionElement, num = 20) {
+            for (let i = 0; i < num; i++) {
+                const spark = document.createElement('div');
+                spark.classList.add('spark');
+                explosionElement.appendChild(spark);
 
-                    const angle = Math.random() * 360;
-                    const distance = Math.random() * 80 + 50; // Sparks travel 50-130px
+                const angle = Math.random() * 360;
+                const distance = Math.random() * 80 + 50;
 
-                    spark.style.setProperty('--angle', angle);
-                    spark.style.setProperty('--distance', distance);
-                    spark.style.animationDelay = `${Math.random() * 1}s`;
-                }
+                spark.style.setProperty('--angle', angle);
+                spark.style.setProperty('--distance', distance);
+                spark.style.animationDelay = `${Math.random() * 1}s`;
             }
+        }
 
-            createSparks(explosionLeft, 20); // زيادة عدد الشرارات إلى 20 لتبدو أكثر كثافة
-            createSparks(explosionRight, 20); // زيادة عدد الشرارات إلى 20
-
-            // دالة لتشغيل صوت المفرقعات (سيحاول إلغاء الكتم)
-            function playFireworkSound() {
-                // محاولة إلغاء كتم الصوت أولاً
-                if (fireworkSound.muted) {
-                    fireworkSound.muted = false;
-                }
-                fireworkSound.play().catch(e => {
-                    console.warn("Autoplay was prevented or unmuting failed. User interaction needed to play sound.", e);
-                    // يمكنك هنا إظهار زر "تشغيل الصوت" للمستخدم إذا فشل التشغيل التلقائي
-                });
+        // دالة لتشغيل صوت المفرقعات (سيحاول إلغاء الكتم)
+        function playFireworkSound() {
+            if (fireworkSound.muted) {
+                fireworkSound.muted = false;
             }
+            fireworkSound.play().catch(e => {
+                console.warn("Autoplay was prevented or unmuting failed. User interaction needed to play sound.", e);
+            });
+        }
 
-            // دالة بدء عملية تغيير الـ IP
-            function startIpChangeProcess() {
-                // إظهار رسالة "يتم تغيير الآي بي" مع الـ loader
-                changingIpMessage.style.display = 'block';
-                successContent.style.display = 'none'; // التأكد من إخفاء محتوى النجاح
+        // دالة بدء عملية تغيير الـ IP
+        function startIpChangeProcess() {
+            changingIpMessage.style.display = 'block';
+            successContent.style.display = 'none';
 
-                // بدء عملية تغيير الـ IP الفعلية في الـ iframe المخفي
-                ipChangeFrame.src = ipChangeUrl;
+            ipChangeFrame.src = ipChangeUrl;
 
-                let countdown = 3; // محاكاة عملية تستغرق 3 ثوانٍ (كما في كودك الأصلي)
+            let countdown = 3;
 
-                function updateLoaderCountdown() {
-                    loaderText.textContent = countdown;
-                    if (countdown > 0) {
-                        countdown--;
-                        setTimeout(updateLoaderCountdown, 1000); // تحديث كل ثانية
-                    } else {
-                        // بعد انتهاء العد التنازلي:
-                        changingIpMessage.style.display = 'none';
-                        successContent.style.display = 'block';
+            function updateLoaderCountdown() {
+                loaderText.textContent = countdown;
+                if (countdown > 0) {
+                    countdown--;
+                    setTimeout(updateLoaderCountdown, 1000);
+                } else {
+                    changingIpMessage.style.display = 'none';
+                    successContent.style.display = 'block';
 
-                        // تفعيل تأثيرات الانفجار والصواريخ في الجانبين
-                        explosionLeft.style.display = 'block';
-                        explosionRight.style.display = 'block';
-                        rocketLeft.style.display = 'flex'; // استخدام flex هنا لأنه rocket-container يحتوي على display: flex;
-                        rocketRight.style.display = 'flex';
+                    // إظهار الأنميشنات وتطبيق الأنميشن للصواريخ
+                    explosionLeft.style.display = 'block';
+                    explosionRight.style.display = 'block';
 
-                        // تشغيل صوت المفرقعات
-                        playFireworkSound();
+                    rocketLeftContainer.style.display = 'flex';
+                    const rocketLeft = rocketLeftContainer.querySelector('.rocket');
+                    if (rocketLeft) {
+                        rocketLeft.style.animation = 'launch-rocket 5s linear infinite';
+                        rocketLeft.style.animationDelay = '0s'; // بدء فوري
                     }
-                }
 
-                // بدء العد التنازلي فور تحميل الصفحة
-                updateLoaderCountdown();
+                    rocketRightContainer.style.display = 'flex';
+                    const rocketRight = rocketRightContainer.querySelector('.rocket');
+                    if (rocketRight) {
+                        rocketRight.style.animation = 'launch-rocket 5s linear infinite';
+                        rocketRight.style.animationDelay = '2.5s'; // تأخير الصاروخ الثاني
+                    }
+                    
+                    playFireworkSound();
+                }
             }
 
-            // بدء العملية تلقائياً عند تحميل محتوى DOM بالكامل
+            updateLoaderCountdown();
+        }
+
+        // بدء العملية تلقائياً عند تحميل محتوى DOM بالكامل
+        document.addEventListener('DOMContentLoaded', () => {
+            createBackgroundParticles();
+            createSparks(explosionLeft, 20);
+            createSparks(explosionRight, 20);
             startIpChangeProcess();
         });
     </script>
