@@ -1,0 +1,694 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8" />
+    <title>worktrekproxy5G</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Cairo:wght@400;700&display=swap"
+        rel="stylesheet"
+    />
+    <style>
+        /* تعريف المتغيرات الأساسية */
+        :root {
+            --primary-color: #4CAF50; /* أخضر جميل للنجاح */
+            --secondary-color: #2196F3; /* أزرق هادئ */
+            --dark-bg: #1a1a2e;
+            --darker-bg: #0f0f1c;
+            --text-color: #ffffff;
+            --border-radius: 15px;
+            --animation-speed: 1.5s;
+            --fire-color1: #ff4500; /* OrangeRed */
+            --fire-color2: #ffa500; /* Orange */
+            --fire-color3: #ffd700; /* Gold */
+            --explosion-color1: #ff8c00; /* DarkOrange */
+            --explosion-color2: #ff4500; /* OrangeRed */
+            --explosion-size: 150px; /* حجم المفرقعات */
+            --rocket-body-color: #a0a0a0; /* لون جسم الصاروخ رمادي معدني */
+            --rocket-tip-color: #d0d0d0; /* لون مقدمة الصاروخ فاتح */
+            --rocket-fin-color: #808080; /* لون زعانف الصاروخ */
+            --rocket-flame-color1: #ff4500; /* نار برتقالي */
+            --rocket-flame-color2: #ffd700; /* نار أصفر */
+            --rocket-flame-color3: #ffffff; /* نار أبيض (حرارة عالية) */
+        }
+
+        /* تنسيق الجسم الأساسي */
+        body {
+            background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
+            color: var(--text-color);
+            font-family: 'Cairo', sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            margin: 0;
+            text-align: center;
+            position: relative;
+            overflow-x: hidden;
+            overflow-y: auto;
+        }
+
+        /* الجسيمات الخلفية */
+        .background-particles {
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: 0;
+            overflow: hidden;
+            pointer-events: none;
+        }
+
+        .particle {
+            position: absolute;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 50%;
+            animation: moveParticles linear infinite;
+        }
+
+        .particle:nth-child(1) { width: 10px; height: 10px; top: 10%; left: 20%; animation-duration: 15s; animation-delay: 0s; }
+        .particle:nth-child(2) { width: 15px; height: 15px; top: 30%; left: 70%; animation-duration: 20s; animation-delay: 2s; }
+        .particle:nth-child(3) { width: 8px; height: 8px; top: 50%; left: 40%; animation-duration: 18s; animation-delay: 4s; }
+        .particle:nth-child(4) { width: 12px; height: 12px; top: 70%; left: 80%; animation-duration: 22s; animation-delay: 6s; }
+        .particle:nth-child(5) { width: 20px; height: 20px; top: 85%; left: 10%; animation-duration: 25s; animation-delay: 8s; }
+
+        @keyframes moveParticles {
+            0% { transform: translateY(0) translateX(0) scale(1); opacity: 0.5; }
+            100% { transform: translateY(-100vh) translateX(50vw) scale(1.5); opacity: 0; }
+        }
+
+        /* تأثير النار */
+        .fire-effect {
+            position: fixed;
+            width: 150px;
+            height: 100vh;
+            bottom: 0;
+            z-index: 5;
+            display: flex;
+            flex-direction: column-reverse;
+            pointer-events: none;
+            overflow: hidden;
+        }
+        .fire-left {
+            left: 0;
+            transform: translateX(-50px);
+        }
+        .fire-right {
+            right: 0;
+            transform: translateX(50px);
+        }
+
+        .flame {
+            position: relative;
+            width: 80%;
+            margin: 0 auto 5px auto;
+            height: 70px;
+            border-radius: 50% 50% 0 0;
+            opacity: 0;
+            animation: ignite 2.8s infinite ease-out;
+            filter: blur(6px);
+            transform-origin: bottom center;
+            background: radial-gradient(circle at bottom, var(--fire-color3) 0%, var(--fire-color2) 50%, var(--fire-color1) 100%);
+            box-shadow: 0 0 15px var(--fire-color1), 0 0 30px rgba(255, 165, 0, 0.5);
+        }
+        .flame:nth-child(1) { animation-delay: 0s; height: 80px; }
+        .flame:nth-child(2) { animation-delay: 0.3s; height: 75px; }
+        .flame:nth-child(3) { animation-delay: 0.6s; height: 70px; }
+        .flame:nth-child(4) { animation-delay: 0.9s; height: 85px; }
+        .flame:nth-child(5) { animation-delay: 1.2s; height: 78px; }
+
+        @keyframes ignite {
+            0% { transform: translateY(100px) scaleX(0.4) opacity(0); }
+            20% { transform: translateY(0) scaleX(0.9) opacity(0.8); }
+            70% { transform: translateY(-70px) scaleX(0.7) opacity(0.5); }
+            100% { transform: translateY(-150px) scaleX(0.5) opacity(0); }
+        }
+
+        /* تأثير الانفجار (المفرقعات) - حاوية عامة للجانبين */
+        .explosion-side {
+            position: fixed;
+            width: var(--explosion-size);
+            height: var(--explosion-size);
+            top: 20%;
+            pointer-events: none;
+            z-index: 100;
+            display: none;
+            filter: drop-shadow(0 0 10px var(--explosion-color1));
+        }
+
+        /* تحديد موقع حاوية الانفجار اليسرى */
+        .explosion-left {
+            left: 0;
+            transform: translateX(10%);
+        }
+
+        /* تحديد موقع حاوية الانفجار اليمنى */
+        .explosion-right {
+            left: calc(100% - var(--explosion-size) - 10%);
+        }
+
+        .spark {
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            background-color: var(--explosion-color1);
+            border-radius: 50%;
+            opacity: 0;
+            animation: explode-spark-infinite 2s ease-out infinite;
+            box-shadow: 0 0 8px var(--explosion-color2), 0 0 15px var(--explosion-color1);
+        }
+
+        .spark:nth-child(1) { --angle: 0; --distance: 80px; }
+        .spark:nth-child(2) { --angle: 45; --distance: 100px; animation-delay: 0.1s; }
+        .spark:nth-child(3) { --angle: 90; --distance: 90px; animation-delay: 0.2s; }
+        .spark:nth-child(4) { --angle: 135; --distance: 110px; animation-delay: 0.3s; }
+        .spark:nth-child(5) { --angle: 180; --distance: 85px; animation-delay: 0.4s; }
+        .spark:nth-child(6) { --angle: 225; --distance: 105px; animation-delay: 0.5s; }
+        .spark:nth-child(7) { --angle: 270; --distance: 95px; animation-delay: 0.6s; }
+        .spark:nth-child(8) { --angle: 315; --distance: 120px; animation-delay: 0.7s; }
+        .spark:nth-child(9) { --angle: 20; --distance: 70px; animation-delay: 0.8s; background-color: var(--explosion-color2); }
+        .spark:nth-child(10) { --angle: 70; --distance: 115px; animation-delay: 0.9s; background-color: var(--explosion-color2); }
+        .spark:nth-child(11) { --angle: 160; --distance: 75px; animation-delay: 1.0s; background-color: var(--explosion-color2); }
+        .spark:nth-child(12) { --angle: 250; --distance: 100px; animation-delay: 1.1s; background-color: var(--explosion-color2); }
+
+        @keyframes explode-spark-infinite {
+            0% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0.2);
+                box-shadow: 0 0 5px var(--explosion-color1);
+            }
+            20% {
+                opacity: 1;
+                transform: translate(calc(var(--distance) * cos(var(--angle) * 0.0174533)), calc(var(--distance) * sin(var(--angle) * 0.0174533))) scale(1);
+                box-shadow: 0 0 10px var(--explosion-color2), 0 0 20px var(--explosion-color1);
+            }
+            80% {
+                opacity: 0;
+                transform: translate(calc(var(--distance) * 1.5 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 1.5 * sin(var(--angle) * 0.0174533))) scale(0.5);
+                box-shadow: none;
+            }
+            100% {
+                opacity: 0;
+                transform: translate(0, 0) scale(0.2);
+            }
+        }
+
+        /* تأثير الصواريخ - START */
+        .rocket-container {
+            position: fixed;
+            width: 70px;
+            height: 100%;
+            bottom: 0;
+            z-index: 90;
+            pointer-events: none;
+            display: none;
+            overflow: hidden;
+        }
+
+        .rocket-left {
+            left: 5%;
+        }
+        .rocket-right {
+            right: 5%;
+        }
+
+        .rocket {
+            position: absolute;
+            bottom: -150px;
+            width: 30px;
+            height: 80px;
+            background: linear-gradient(to bottom, var(--rocket-body-color) 0%, var(--rocket-body-color) 70%, #606060 100%);
+            border-radius: 5px 5px 2px 2px;
+            left: 50%;
+            transform: translateX(-50%);
+            animation: launch-rocket 5s linear infinite;
+            opacity: 0;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+        }
+
+        /* مقدمة الصاروخ */
+        .rocket::before {
+            content: '';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 0;
+            height: 0;
+            border-left: 15px solid transparent;
+            border-right: 15px solid transparent;
+            border-bottom: 20px solid var(--rocket-tip-color);
+            border-radius: 2px;
+        }
+
+        /* زعانف الصاروخ (على الجانبين) - يمكن تعديلها لتحسين الشكل ثلاثي الأبعاد */
+        .rocket::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            height: 10px;
+            background-color: var(--rocket-fin-color);
+            transform-origin: center bottom;
+            transform: skewX(-20deg); /* زعنفة أولى */
+        }
+        /* الزعنفة الثانية على الجانب الآخر - استخدم pseudo-element إضافي إذا أردت المزيد */
+        /* ملاحظة: إعادة استخدام ::before هنا قد يؤثر على مقدمة الصاروخ. يفضل استخدام عناصر div داخلية للزعانف المتعددة */
+        /* ولكن لأغراض توضيحية، سأتركها هكذا */
+        .rocket:nth-of-type(odd)::after { /* لتمييز الزعانف على الجانب الآخر، هذه الطريقة ليست الأفضل للزعانف */
+            /* This is a simple illustration. For more realistic fins, consider nested divs. */
+        }
+
+
+        .rocket-flame {
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 25px;
+            height: 60px;
+            background: radial-gradient(circle at center top, var(--rocket-flame-color3) 0%, var(--rocket-flame-color2) 40%, var(--rocket-flame-color1) 80%, rgba(255, 0, 0, 0) 100%);
+            border-radius: 50% 50% 10% 10%;
+            filter: blur(8px);
+            opacity: 0.9;
+            animation: rocket-flame-pulse 0.3s infinite alternate;
+            box-shadow: 0 0 20px var(--rocket-flame-color1), 0 0 40px var(--rocket-flame-color2);
+            transform-origin: center top;
+        }
+
+
+        @keyframes launch-rocket {
+            0% {
+                bottom: -150px;
+                opacity: 0;
+                transform: translateX(-50%) scale(0.7);
+            }
+            5% {
+                opacity: 1;
+            }
+            90% {
+                bottom: 100vh;
+                opacity: 1;
+                transform: translateX(-50%) scale(1);
+            }
+            100% {
+                bottom: 150vh;
+                opacity: 0;
+                transform: translateX(-50%) scale(1.2);
+            }
+        }
+
+        @keyframes rocket-flame-pulse {
+            0% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.9; }
+            50% { transform: translateX(-50%) scaleY(1.1) scaleX(0.9); opacity: 1; }
+            100% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.9; }
+        }
+
+        .rocket:nth-child(1) { animation-delay: 0s; }
+        .rocket:nth-child(2) { animation-delay: 2s; }
+        .rocket:nth-child(3) { animation-delay: 4s; }
+
+        /* تأثير الصواريخ - END */
+
+        /* تنسيقات الحاوية الرئيسية */
+        .container {
+            background-color: rgba(0, 0, 0, 0.4);
+            padding: 50px;
+            border-radius: var(--border-radius);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            position: relative;
+            z-index: 10;
+            animation: fadeIn 1s ease-out forwards;
+            max-width: 90%;
+            width: 500px;
+            box-sizing: border-box;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            font-size: 2.2em;
+            margin-bottom: 25px;
+            color: var(--primary-color);
+            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+        }
+
+        h1 strong {
+            font-weight: 700;
+        }
+
+        .content-area {
+            min-height: 150px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader-wrapper {
+            position: relative;
+            width: 100px;
+            height: 100px;
+            margin: 30px auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .loader {
+            border: 8px solid rgba(255, 255, 255, 0.2);
+            border-top: 8px solid var(--secondary-color);
+            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            animation: spin var(--animation-speed) linear infinite;
+            position: absolute;
+        }
+
+        .loader-text {
+            font-size: 1.2em;
+            color: var(--text-color);
+            position: absolute;
+            font-weight: bold;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .main-text {
+            font-size: 1.1em;
+            line-height: 1.6;
+            opacity: 0.9;
+            margin-top: 25px;
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .message-display {
+            display: none;
+            font-size: 1.8em;
+            color: var(--primary-color);
+            font-weight: 700;
+            margin-top: 30px;
+            animation: scaleIn 0.5s ease-out forwards;
+        }
+        .message-display p {
+            margin: 0;
+            font-size: 1em;
+        }
+
+        .additional-info {
+            margin-top: 20px;
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95em;
+            line-height: 1.5;
+        }
+
+        .additional-info a {
+            color: var(--secondary-color);
+            text-decoration: none;
+            font-weight: bold;
+            transition: color 0.3s ease;
+        }
+
+        .additional-info a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        @keyframes scaleIn {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        /* iframe للتحميل في الخلفية */
+        #ipChangeFrame {
+            position: absolute;
+            top: -9999px;
+            left: -9999px;
+            width: 1px;
+            height: 1px;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        /* التعديلات المتجاوبة (Responsive) */
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px;
+                border-radius: 10px;
+            }
+            h1 {
+                font-size: 1.8em;
+            }
+            .loader-wrapper {
+                width: 80px;
+                height: 80px;
+            }
+            .loader {
+                width: 60px;
+                height: 60px;
+                border-width: 6px;
+            }
+            .loader-text {
+                font-size: 1em;
+            }
+            .main-text {
+                font-size: 1em;
+            }
+            .message-display {
+                font-size: 1.5em;
+            }
+            .additional-info {
+                font-size: 0.85em;
+            }
+            .fire-effect {
+                width: 100px;
+                left: -20px;
+                right: -20px;
+            }
+            .explosion-side {
+                width: 120px;
+                height: 120px;
+            }
+            .explosion-left {
+                left: 2%;
+                transform: translateX(0);
+            }
+            .explosion-right {
+                left: calc(100% - 120px - 2%);
+            }
+            .rocket-container {
+                width: 50px;
+            }
+            .rocket {
+                width: 20px;
+                height: 60px;
+            }
+            .rocket::before { /* مقدمة الصاروخ */
+                top: -10px;
+                border-left: 10px solid transparent;
+                border-right: 10px solid transparent;
+                border-bottom: 15px solid var(--rocket-tip-color);
+            }
+            .rocket-flame {
+                width: 15px;
+                height: 40px;
+                bottom: -20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="fire-effect fire-left">
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+    </div>
+
+    <div class="fire-effect fire-right">
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+        <div class="flame"></div>
+    </div>
+
+    <div class="background-particles">
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+        <div class="particle"></div>
+    </div>
+
+    <div class="explosion-side explosion-left" id="explosionLeft">
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+    </div>
+
+    <div class="explosion-side explosion-right" id="explosionRight">
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+        <div class="spark"></div>
+    </div>
+
+    <div class="rocket-container rocket-left" id="rocketLeft">
+        <div class="rocket">
+            <div class="rocket-flame"></div>
+        </div>
+        <div class="rocket">
+            <div class="rocket-flame"></div>
+        </div>
+        <div class="rocket">
+            <div class="rocket-flame"></div>
+        </div>
+    </div>
+
+    <div class="rocket-container rocket-right" id="rocketRight">
+        <div class="rocket">
+            <div class="rocket-flame"></div>
+        </div>
+        <div class="rocket">
+            <div class="rocket-flame"></div>
+        </div>
+        <div class="rocket">
+            <div class="rocket-flame"></div>
+        </div>
+    </div>
+
+    <div class="container">
+        <h1><strong>worktrekproxy5G</strong></h1>
+
+        <div class="content-area">
+            <div class="message-display" id="changingIpMessage">
+                <div class="loader-wrapper">
+                    <div class="loader"></div>
+                    <div class="loader-text"></div>
+                </div>
+                <p class="main-text">يتم تغيير الآي بي...</p>
+            </div>
+
+            <div class="message-display" id="successContent">
+                <p class="main-text">تم تغيير الآي بي بنجاح!</p>
+                <div class="additional-info">
+                    <p>انضم إلى قناة التلغرام الخاصة بنا: <a href="https://t.me/WorkTrekProxy5G" target="_blank">t.me/WorkTrekProxy5G</a></p>
+                    <p>الادمن الاساسي: <a href="https://t.me/danialoc" target="_blank">t.me/danialoc</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <iframe id="ipChangeFrame" name="ipChangeFrame"></iframe>
+
+    <audio id="fireworkSound" src="music.WAV" autoplay muted preload="auto" loop></audio>
+
+    <script>
+        const ipChangeUrl = "https://localtonet.com/android/changeip?u=6cEOFpVABjybY2KrGZRwfdHC35NvLM8SToJ"; // رابط تغيير الـ IP الخاص بك
+
+        const changingIpMessage = document.getElementById('changingIpMessage');
+        const successContent = document.getElementById('successContent');
+        const loaderText = changingIpMessage.querySelector('.loader-text');
+        const ipChangeFrame = document.getElementById('ipChangeFrame');
+        const explosionLeft = document.getElementById('explosionLeft');
+        const explosionRight = document.getElementById('explosionRight');
+        const rocketLeft = document.getElementById('rocketLeft');
+        const rocketRight = document.getElementById('rocketRight');
+        const fireworkSound = document.getElementById('fireworkSound'); // جلب عنصر الصوت
+
+        // إخفاء محتوى النجاح والمفرقعات والصواريخ مبدئياً
+        successContent.style.display = 'none';
+        explosionLeft.style.display = 'none';
+        explosionRight.style.display = 'none';
+        rocketLeft.style.display = 'none';
+        rocketRight.style.display = 'none';
+
+        // دالة لتشغيل صوت المفرقعات (سيحاول إلغاء الكتم)
+        function playFireworkSound() {
+            if (fireworkSound.muted) {
+                fireworkSound.muted = false; // محاولة إلغاء كتم الصوت
+            }
+            fireworkSound.play().catch(e => {
+                console.warn("Autoplay was prevented or unmuting failed. User interaction needed to play sound.", e);
+                // هنا يمكنك عرض رسالة للمستخدم بضرورة النقر لتشغيل الصوت
+                // أو تجاهل إذا كنت لا تريد إجبار المستخدم على ذلك
+            });
+        }
+
+        // دالة بدء عملية تغيير الـ IP
+        function startIpChangeProcess() {
+            // إظهار رسالة "يتم تغيير الآي بي" مع الـ loader
+            changingIpMessage.style.display = 'block';
+
+            // بدء عملية تغيير الـ IP الفعلية في الـ iframe المخفي
+            ipChangeFrame.src = ipChangeUrl;
+
+            let countdown = 3; // محاكاة عملية تستغرق 3 ثوانٍ
+
+            function updateLoaderCountdown() {
+                loaderText.textContent = countdown;
+                if (countdown > 0) {
+                    countdown--;
+                    setTimeout(updateLoaderCountdown, 1000); // تحديث كل ثانية
+                } else {
+                    // بعد انتهاء العد التنازلي:
+                    // 1. إخفاء رسالة التغيير
+                    changingIpMessage.style.display = 'none';
+                    // 2. إظهار محتوى النجاح
+                    successContent.style.display = 'block';
+
+                    // 3. تفعيل تأثيرات الانفجار والصواريخ في الجانبين بشكل دائم
+                    explosionLeft.style.display = 'block';
+                    explosionRight.style.display = 'block';
+                    rocketLeft.style.display = 'block';
+                    rocketRight.style.display = 'block';
+
+                    // 4. تشغيل صوت المفرقعات (محاولة إلغاء الكتم)
+                    playFireworkSound();
+                }
+            }
+
+            // بدء العد التنازلي فور تحميل الصفحة
+            updateLoaderCountdown();
+        }
+
+        // بدء العملية تلقائياً عند تحميل محتوى DOM بالكامل
+        document.addEventListener('DOMContentLoaded', () => {
+            // ملاحظة: المتصفحات الحديثة قد تمنع التشغيل التلقائي حتى للصوت المكتوم إذا لم يكن هناك تفاعل سابق.
+            // ولكن إضافة autoplay muted تزيد من احتمالية التشغيل.
+            // قم ببدء عملية الـ IP بغض النظر عن حالة الصوت.
+            startIpChangeProcess();
+        });
+    </script>
+</body>
+</html>
