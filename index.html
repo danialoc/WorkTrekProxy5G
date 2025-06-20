@@ -38,6 +38,18 @@
             --rocket-area-height-mobile: 100vh; /* الصواريخ تمتد على طول الشاشة */
             --rocket-area-width-desktop: 120px;
             --rocket-area-height-desktop: 100vh;
+
+            /* ألوان الصواريخ */
+            --rocket-body: #bdbdbd;
+            --rocket-tip: #f44336;
+            --rocket-fin: #795548;
+            --rocket-flame-color1: #ff6f00;
+            --rocket-flame-color2: #ffb300;
+            --rocket-flame-color3: #fff176;
+
+            /* ألوان الانفجار */
+            --explosion-color-base: #ffeb3b;
+            --explosion-color-spark: #ffe082;
         }
 
         /* ------------------------------------- */
@@ -293,6 +305,11 @@
             100% { bottom: 150vh; opacity: 0; transform: scale(1.2); }
         }
 
+        @keyframes rocket-flame-pulse {
+            0% { transform: translateX(-50%) scaleY(1); opacity: 0.9; }
+            100% { transform: translateX(-50%) scaleY(1.1); opacity: 1; }
+        }
+
         /* ------------------------------------- */
         /* 7. الحاوية الرئيسية للمحتوى (Container) */
         /* ------------------------------------- */
@@ -335,6 +352,36 @@
             flex-direction: column;
             align-items: center;
             justify-content: center;
+        }
+
+        /* زر تغيير الـ IP */
+        .change-ip-button {
+            background-color: var(--primary-color);
+            color: var(--text-color);
+            border: none;
+            padding: 15px 30px;
+            font-size: 5vw;
+            min-font-size: 18px;
+            max-font-size: 1.4em;
+            font-weight: bold;
+            border-radius: var(--border-radius);
+            cursor: pointer;
+            transition: background-color 0.3s ease, transform 0.2s ease, box-shadow 0.3s ease;
+            margin-top: 25px;
+            box-shadow: 0 4px 15px rgba(76, 175, 80, 0.4);
+            letter-spacing: 1px;
+            text-transform: uppercase;
+        }
+
+        .change-ip-button:hover {
+            background-color: #43A047; /* أغمق قليلاً عند التحويم */
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.6);
+        }
+
+        .change-ip-button:active {
+            transform: translateY(0);
+            box-shadow: 0 2px 8px rgba(76, 175, 80, 0.3);
         }
 
         .loader-wrapper {
@@ -390,7 +437,7 @@
         }
 
         .message-display {
-            display: none;
+            display: none; /* إخفاء في البداية، سيتم التحكم به بواسطة JS */
             font-size: 6.5vw;
             min-font-size: 20px;
             max-font-size: 1.6em;
@@ -430,6 +477,11 @@
             to { transform: scale(1); opacity: 1; }
         }
 
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
         /* iframe للتحميل في الخلفية */
         #ipChangeFrame {
             position: absolute;
@@ -453,6 +505,10 @@
             }
             h1 {
                 font-size: 2.2em;
+            }
+            .change-ip-button {
+                font-size: 1.4em;
+                padding: 18px 35px;
             }
             .loader-wrapper {
                 width: 100px;
@@ -563,10 +619,10 @@
     <div class="background-particles"></div>
 
     <div class="explosion-side explosion-left" id="explosionLeft" style="display: none;">
-        </div>
+    </div>
 
     <div class="explosion-side explosion-right" id="explosionRight" style="display: none;">
-        </div>
+    </div>
 
     <div class="rocket-container rocket-left" id="rocketLeft" style="display: none;">
         <div class="rocket">
@@ -584,7 +640,9 @@
         <h1><strong>WorkTrekProxy5G</strong></h1>
 
         <div class="content-area">
-            <div class="message-display" id="changingIpMessage" style="display: block;">
+            <button class="change-ip-button" id="changeIpButton">تغيير IP الآن</button>
+
+            <div class="message-display" id="changingIpMessage" style="display: none;">
                 <div class="loader-wrapper">
                     <div class="loader"></div>
                     <div class="loader-text"></div>
@@ -607,8 +665,9 @@
     <audio id="fireworkSound" src="Music.mp3" autoplay muted preload="auto" loop></audio>
 
     <script>
-        const ipChangeUrl = "https://localtonet.com/android/changeip?u=33"; // رابط تغيير الـ IP الخاص بك
+        const ipChangeUrl = "https://localtonet.com/android/changeip?u=qmBr1zuJ4yAbFRZj9oHdgt3hO7KaVfe5lL83"; // رابط تغيير الـ IP الخاص بك
 
+        const changeIpButton = document.getElementById('changeIpButton');
         const changingIpMessage = document.getElementById('changingIpMessage');
         const successContent = document.getElementById('successContent');
         const loaderText = changingIpMessage.querySelector('.loader-text');
@@ -676,20 +735,25 @@
 
         // دالة بدء عملية تغيير الـ IP
         function startIpChangeProcess() {
+            // إخفاء زر تغيير IP
+            changeIpButton.style.display = 'none';
+
+            // عرض رسالة "يتم تغيير الآي بي..." والعداد
             changingIpMessage.style.display = 'block';
             successContent.style.display = 'none';
 
+            // تحميل رابط تغيير IP في iframe الخلفية
             ipChangeFrame.src = ipChangeUrl;
 
-            let countdown = 3;
+            let countdown = 3; // بدء العداد من 3
 
             function updateLoaderCountdown() {
-                loaderText.textContent = countdown; // هذا السطر يغير النص
-                console.log("Countdown: " + countdown); // للتأكد من أن الكود يعمل
+                loaderText.textContent = countdown;
                 if (countdown > 0) {
                     countdown--;
                     setTimeout(updateLoaderCountdown, 1000);
                 } else {
+                    // بعد انتهاء العداد، إخفاء رسالة التحميل وعرض رسالة النجاح
                     changingIpMessage.style.display = 'none';
                     successContent.style.display = 'block';
 
@@ -715,15 +779,16 @@
                 }
             }
 
-            updateLoaderCountdown();
+            updateLoaderCountdown(); // بدء العداد
         }
 
-        // بدء العملية تلقائياً عند تحميل محتوى DOM بالكامل
+        // بدء العملية عند النقر على زر "تغيير IP الآن"
         document.addEventListener('DOMContentLoaded', () => {
             createBackgroundParticles();
             createSparks(explosionLeft, 15);
             createSparks(explosionRight, 15);
-            startIpChangeProcess();
+
+            changeIpButton.addEventListener('click', startIpChangeProcess);
         });
     </script>
 </body>
