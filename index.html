@@ -11,30 +11,37 @@
         rel="stylesheet"
     />
     <style>
-        /* تعريف المتغيرات الأساسية */
+        /* ------------------------------------- */
+        /* 1. المتغيرات الأساسية (CSS Variables) */
+        /* ------------------------------------- */
         :root {
-            --primary-color: #4CAF50; /* أخضر جميل للنجاح */
+            --primary-color: #4CAF50; /* أخضر للنجاح */
             --secondary-color: #2196F3; /* أزرق هادئ */
             --dark-bg: #1a1a2e;
             --darker-bg: #0f0f1c;
             --text-color: #ffffff;
-            --border-radius: 15px;
+            --border-radius: 12px; /* تم تقليلها قليلاً */
             --animation-speed: 1.5s;
-            --fire-color1: #ff4500; /* OrangeRed */
-            --fire-color2: #ffa500; /* Orange */
-            --fire-color3: #ffd700; /* Gold */
-            --explosion-color1: #ff8c00; /* DarkOrange */
-            --explosion-color2: #ff4500; /* OrangeRed */
-            --explosion-size: 150px; /* حجم المفرقعات للكمبيوتر */
-            --rocket-body-color: #a0a0a0; /* لون جسم الصاروخ رمادي معدني */
-            --rocket-tip-color: #d0d0d0; /* لون مقدمة الصاروخ فاتح */
-            --rocket-fin-color: #808080; /* لون زعانف الصاروخ */
-            --rocket-flame-color1: #ff4500; /* نار برتقالي */
-            --rocket-flame-color2: #ffd700; /* نار أصفر */
-            --rocket-flame-color3: #ffffff; /* نار أبيض (حرارة عالية) */
+
+            /* ألوان وتصغير لأداء أفضل على الهاتف */
+            --fire-color-base: #ff4500; /* OrangeRed */
+            --fire-color-mid: #ffa500;  /* Orange */
+            --fire-color-top: #ffd700;  /* Gold */
+
+            --explosion-color-base: #ff8c00; /* DarkOrange */
+            --explosion-color-spark: #ff4500; /* OrangeRed */
+
+            --rocket-body: #a0a0a0;
+            --rocket-tip: #d0d0d0;
+            --rocket-fin: #808080;
+            --rocket-flame-color1: #ff4500;
+            --rocket-flame-color2: #ffd700;
+            --rocket-flame-color3: #ffffff;
         }
 
-        /* تنسيق الجسم الأساسي */
+        /* ------------------------------------- */
+        /* 2. التنسيقات الأساسية للجسم والصفحة */
+        /* ------------------------------------- */
         body {
             background: linear-gradient(135deg, var(--darker-bg) 0%, var(--dark-bg) 100%);
             color: var(--text-color);
@@ -47,11 +54,14 @@
             margin: 0;
             text-align: center;
             position: relative;
-            overflow-x: hidden; /* منع التمرير الأفقي فقط */
+            overflow-x: hidden; /* منع التمرير الأفقي تمامًا */
             overflow-y: auto; /* السماح بالتمرير العمودي إذا لزم الأمر */
+            box-sizing: border-box;
         }
 
-        /* الجسيمات الخلفية */
+        /* ------------------------------------- */
+        /* 3. الجسيمات الخلفية (Background Particles) */
+        /* ------------------------------------- */
         .background-particles {
             position: fixed;
             width: 100%;
@@ -75,231 +85,195 @@
             100% { transform: translateY(-100vh) translateX(50vw) scale(1.5); opacity: 0; }
         }
 
-        /* تأثير النار */
+        /* ------------------------------------- */
+        /* 4. تأثير النار (Fire Effect) */
+        /* ------------------------------------- */
         .fire-effect {
             position: fixed;
-            width: 150px; /* عرض مناسب على الكمبيوتر */
+            width: 100px; /* حجم معقول للهاتف كقيمة افتراضية */
             height: 100vh;
             bottom: 0;
             z-index: 5;
             display: flex;
             flex-direction: column-reverse;
             pointer-events: none;
-            overflow: hidden; /* لضمان عدم خروج الشعلات عن الحاوية */
+            overflow: hidden; /* لمنع الشعلات من الخروج عن الحاوية */
         }
         .fire-left {
             left: 0;
-            transform: translateX(-50%); /* إخفاء نصف العنصر خارج الشاشة */
-            right: auto;
+            transform: translateX(-50%); /* لإخفاء نصف العنصر خارج الشاشة */
         }
         .fire-right {
             right: 0;
-            transform: translateX(50%); /* إخفاء نصف العنصر خارج الشاشة */
-            left: auto;
+            transform: translateX(50%); /* لإخفاء نصف العنصر خارج الشاشة */
         }
 
         .flame {
             position: relative;
             width: 80%;
-            margin: 0 auto 5px auto;
-            height: 70px;
+            margin: 0 auto 3px auto; /* تقليل المسافة بين الشعلات */
+            height: 50px; /* حجم الشعلة الافتراضي للهاتف */
             border-radius: 50% 50% 0 0;
             opacity: 0;
-            animation: ignite 2.8s infinite ease-out;
-            filter: blur(6px);
+            animation: ignite 2.5s infinite ease-out; /* تسريع بسيط */
+            filter: blur(4px); /* تقليل التمويه لأداء أفضل */
             transform-origin: bottom center;
-            background: radial-gradient(circle at bottom, var(--fire-color3) 0%, var(--fire-color2) 50%, var(--fire-color1) 100%);
-            box-shadow: 0 0 15px var(--fire-color1), 0 0 30px rgba(255, 165, 0, 0.5);
+            background: radial-gradient(circle at bottom, var(--fire-color-top) 0%, var(--fire-color-mid) 50%, var(--fire-color-base) 100%);
+            box-shadow: 0 0 10px var(--fire-color-base), 0 0 20px rgba(255, 165, 0, 0.5); /* تقليل الظل */
         }
-        .flame:nth-child(1) { animation-delay: 0s; height: 80px; }
-        .flame:nth-child(2) { animation-delay: 0.3s; height: 75px; }
-        .flame:nth-child(3) { animation-delay: 0.6s; height: 70px; }
-        .flame:nth-child(4) { animation-delay: 0.9s; height: 85px; }
-        .flame:nth-child(5) { animation-delay: 1.2s; height: 78px; }
+        .flame:nth-child(1) { animation-delay: 0s; height: 55px; }
+        .flame:nth-child(2) { animation-delay: 0.2s; height: 50px; }
+        .flame:nth-child(3) { animation-delay: 0.4s; height: 45px; }
+        .flame:nth-child(4) { animation-delay: 0.6s; height: 60px; }
+        .flame:nth-child(5) { animation-delay: 0.8s; height: 52px; }
 
         @keyframes ignite {
-            0% { transform: translateY(100px) scaleX(0.4) opacity(0); }
+            0% { transform: translateY(60px) scaleX(0.4) opacity(0); }
             20% { transform: translateY(0) scaleX(0.9) opacity(0.8); }
-            70% { transform: translateY(-70px) scaleX(0.7) opacity: 0.5; }
-            100% { transform: translateY(-150px) scaleX(0.5) opacity: 0; }
+            70% { transform: translateY(-30px) scaleX(0.7) opacity: 0.5; }
+            100% { transform: translateY(-70px) scaleX(0.5) opacity: 0; }
         }
 
-        /* تأثير الانفجار (المفرقعات) */
+        /* ------------------------------------- */
+        /* 5. تأثير الانفجار (Fireworks) */
+        /* ------------------------------------- */
         .explosion-side {
             position: fixed;
-            width: var(--explosion-size);
-            height: var(--explosion-size);
-            top: 20%; /* ارتفاع ثابت من الأعلى */
+            width: 120px; /* حجم افتراضي للموبايل */
+            height: 120px;
+            top: 15%; /* ارتفاع ثابت من الأعلى */
             pointer-events: none;
             z-index: 15;
-            filter: drop-shadow(0 0 10px var(--explosion-color1));
-            overflow: hidden; /* لمنع الشرارات من الخروج من الحاوية */
-            /* display: none; سيتم التحكم به بواسطة JS */
+            filter: drop-shadow(0 0 8px var(--explosion-color-base)); /* تقليل الظل */
+            overflow: hidden; /* لمنع الشرارات من الخروج */
         }
-
         .explosion-left {
             left: 0;
-            transform: translateX(-50%); /* لإخفاء نصف العنصر خارج الشاشة */
+            transform: translateX(-50%);
         }
-
         .explosion-right {
             right: 0;
-            transform: translateX(50%); /* لإخفاء نصف العنصر خارج الشاشة */
+            transform: translateX(50%);
         }
 
         .spark {
             position: absolute;
-            width: 12px;
-            height: 12px;
-            background-color: var(--explosion-color1);
+            width: 8px; /* حجم الشرارة الافتراضي */
+            height: 8px;
+            background-color: var(--explosion-color-spark);
             border-radius: 50%;
             opacity: 0;
-            animation: explode-spark-infinite 2s ease-out infinite;
-            box-shadow: 0 0 8px var(--explosion-color2), 0 0 15px var(--explosion-color1);
+            animation: explode-spark-infinite 1.8s ease-out infinite; /* تسريع بسيط */
+            box-shadow: 0 0 6px var(--explosion-color-spark), 0 0 12px var(--explosion-color-base); /* تقليل الظل */
         }
 
         @keyframes explode-spark-infinite {
-            0% {
-                opacity: 0;
-                transform: translate(0, 0) scale(0.2);
-                box-shadow: 0 0 5px var(--explosion-color1);
-            }
-            20% {
-                opacity: 1;
-                transform: translate(calc(var(--distance) * cos(var(--angle) * 0.0174533)), calc(var(--distance) * sin(var(--angle) * 0.0174533))) scale(1);
-                box-shadow: 0 0 10px var(--explosion-color2), 0 0 20px var(--explosion-color1);
-            }
-            80% {
-                opacity: 0;
-                transform: translate(calc(var(--distance) * 1.5 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 1.5 * sin(var(--angle) * 0.0174533))) scale(0.5);
-                box-shadow: none;
-            }
-            100% {
-                opacity: 0;
-                transform: translate(0, 0) scale(0.2);
-            }
+            0% { opacity: 0; transform: translate(0, 0) scale(0.1); }
+            20% { opacity: 1; transform: translate(calc(var(--distance) * 0.7 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 0.7 * sin(var(--angle) * 0.0174533))) scale(0.8); }
+            80% { opacity: 0; transform: translate(calc(var(--distance) * 1.0 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 1.0 * sin(var(--angle) * 0.0174533))) scale(0.3); }
+            100% { opacity: 0; transform: translate(0, 0) scale(0.1); }
         }
 
-        /* تأثير الصواريخ - START */
+        /* ------------------------------------- */
+        /* 6. تأثير الصواريخ (Rockets) */
+        /* ------------------------------------- */
         .rocket-container {
             position: fixed;
-            width: 70px; /* عرض مناسب على الكمبيوتر */
+            width: 60px; /* حجم افتراضي للموبايل */
             height: 100vh;
             bottom: 0;
             z-index: 20;
             pointer-events: none;
             display: flex;
-            justify-content: center; /* لمركزة الصاروخ داخل الحاوية */
-            align-items: flex-end; /* لبدء الصاروخ من الأسفل */
+            justify-content: center;
+            align-items: flex-end;
             overflow: hidden;
         }
-
         .rocket-left {
             left: 0;
-            transform: translateX(-50%); /* لإخفاء نصف العنصر خارج الشاشة */
-            right: auto;
+            transform: translateX(-50%);
         }
         .rocket-right {
             right: 0;
-            transform: translateX(50%); /* لإخفاء نصف العنصر خارج الشاشة */
-            left: auto;
+            transform: translateX(50%);
         }
 
         .rocket {
             position: absolute;
-            bottom: -150px; /* بدء الصاروخ من تحت الشاشة */
-            width: 30px;
-            height: 80px;
-            background: linear-gradient(to bottom, var(--rocket-body-color) 0%, var(--rocket-body-color) 70%, #606060 100%);
+            bottom: -100px; /* بدء الصاروخ من تحت الشاشة */
+            width: 25px; /* حجم الصاروخ الافتراضي */
+            height: 70px;
+            background: linear-gradient(to bottom, var(--rocket-body) 0%, var(--rocket-body) 70%, #606060 100%);
             border-radius: 5px 5px 2px 2px;
-            left: 50%; /* للحفاظ على مركزية الصاروخ داخل الحاوية */
-            transform: translateX(-50%); /* تصحيح لمركزية الصاروخ نفسه */
+            left: 50%;
+            transform: translateX(-50%); /* لمركزة الصاروخ داخل حاويته */
             opacity: 0;
-            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            box-shadow: 0 0 10px rgba(255, 255, 255, 0.2); /* ظل أخف */
         }
-
-        /* مقدمة الصاروخ */
-        .rocket::before {
+        .rocket::before { /* مقدمة الصاروخ */
             content: '';
             position: absolute;
-            top: -15px;
+            top: -12px;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 15px solid transparent;
-            border-right: 15px solid transparent;
-            border-bottom: 20px solid var(--rocket-tip-color);
+            border-left: 12.5px solid transparent;
+            border-right: 12.5px solid transparent;
+            border-bottom: 18px solid var(--rocket-tip);
             border-radius: 2px;
         }
-
-        /* زعانف الصاروخ (باستخدام box-shadow لمحاكاة زعانف جانبية بسيطة) */
-        .rocket {
-            position: absolute;
+        .rocket::after { /* زعانف الصاروخ - محاكاة بـbox-shadow */
+            content: ''; /* لازم يكون موجود حتى لو فارغ لاستخدام box-shadow */
+            position: absolute; /* ضروري لكي يعمل box-shadow */
+            top: 0; left: 0; width: 100%; height: 100%;
             box-shadow:
-                0 0 15px rgba(255, 255, 255, 0.3),
-                -8px 5px 0 0 var(--rocket-fin-color), /* زعنفة وهمية يسار */
-                8px 5px 0 0 var(--rocket-fin-color); /* زعنفة وهمية يمين */
-        }
-        .rocket::after {
-            content: none;
+                -7px 5px 0 0 var(--rocket-fin), /* زعنفة وهمية يسار */
+                7px 5px 0 0 var(--rocket-fin);  /* زعنفة وهمية يمين */
         }
 
         .rocket-flame {
             position: absolute;
-            bottom: -30px;
+            bottom: -25px;
             left: 50%;
             transform: translateX(-50%);
-            width: 25px;
-            height: 60px;
+            width: 20px; /* حجم شعلة الصاروخ */
+            height: 50px;
             background: radial-gradient(circle at center top, var(--rocket-flame-color3) 0%, var(--rocket-flame-color2) 40%, var(--rocket-flame-color1) 80%, rgba(255, 0, 0, 0) 100%);
             border-radius: 50% 50% 10% 10%;
-            filter: blur(8px);
+            filter: blur(6px); /* تقليل التمويه */
             opacity: 0.9;
             animation: rocket-flame-pulse 0.3s infinite alternate;
-            box-shadow: 0 0 20px var(--rocket-flame-color1), 0 0 40px var(--rocket-flame-color2);
+            box-shadow: 0 0 15px var(--rocket-flame-color1), 0 0 30px var(--rocket-flame-color2); /* تقليل الظل */
             transform-origin: center top;
         }
 
-
         @keyframes launch-rocket {
-            0% {
-                bottom: -150px;
-                opacity: 0;
-                transform: translateX(-50%) scale(0.7);
-            }
-            5% {
-                opacity: 1;
-            }
-            90% {
-                bottom: 100vh;
-                opacity: 1;
-                transform: translateX(-50%) scale(1);
-            }
-            100% {
-                bottom: 150vh;
-                opacity: 0;
-                transform: translateX(-50%) scale(1.2);
-            }
+            0% { bottom: -100px; opacity: 0; transform: translateX(-50%) scale(0.8); }
+            5% { opacity: 1; }
+            90% { bottom: 100vh; opacity: 1; transform: translateX(-50%) scale(1); }
+            100% { bottom: 150vh; opacity: 0; transform: translateX(-50%) scale(1.1); }
         }
 
         @keyframes rocket-flame-pulse {
             0% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.9; }
-            50% { transform: translateX(-50%) scaleY(1.1) scaleX(0.9); opacity: 1; }
+            50% { transform: translateX(-50%) scaleY(1.05) scaleX(0.95); opacity: 1; } /* حركة أخف */
             100% { transform: translateX(-50%) scaleY(1) scaleX(1); opacity: 0.9; }
         }
 
-        /* تنسيقات الحاوية الرئيسية */
+        /* ------------------------------------- */
+        /* 7. الحاوية الرئيسية للمحتوى (Container) */
+        /* ------------------------------------- */
         .container {
             background-color: rgba(0, 0, 0, 0.4);
-            padding: 50px;
+            padding: 40px 20px; /* تقليل البادينج الجانبي للهاتف */
             border-radius: var(--border-radius);
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5); /* ظل أخف */
             position: relative;
-            z-index: 30; /* أعلى z-index لضمان ظهور المحتوى فوق كل الأنميشنات */
+            z-index: 30; /* أعلى z-index لضمان ظهور المحتوى */
             animation: fadeIn 1s ease-out forwards;
-            max-width: 90%;
-            width: 500px;
+            max-width: 95%; /* زيادة العرض على الشاشات الصغيرة */
+            width: 450px; /* عرض افتراضي للكمبيوتر */
             box-sizing: border-box;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
@@ -310,10 +284,10 @@
         }
 
         h1 {
-            font-size: 2.2em;
-            margin-bottom: 25px;
+            font-size: 2em;
+            margin-bottom: 20px;
             color: var(--primary-color);
-            text-shadow: 0 0 10px rgba(76, 175, 80, 0.5);
+            text-shadow: 0 0 8px rgba(76, 175, 80, 0.4); /* ظل أخف */
         }
 
         h1 strong {
@@ -321,7 +295,7 @@
         }
 
         .content-area {
-            min-height: 150px;
+            min-height: 120px; /* تقليل الارتفاع */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -330,26 +304,26 @@
 
         .loader-wrapper {
             position: relative;
-            width: 100px;
-            height: 100px;
-            margin: 30px auto;
+            width: 80px; /* حجم اللودر الافتراضي */
+            height: 80px;
+            margin: 25px auto;
             display: flex;
             align-items: center;
             justify-content: center;
         }
 
         .loader {
-            border: 8px solid rgba(255, 255, 255, 0.2);
-            border-top: 8px solid var(--secondary-color);
+            border: 6px solid rgba(255, 255, 255, 0.2);
+            border-top: 6px solid var(--secondary-color);
             border-radius: 50%;
-            width: 80px;
-            height: 80px;
+            width: 70px;
+            height: 70px;
             animation: spin var(--animation-speed) linear infinite;
             position: absolute;
         }
 
         .loader-text {
-            font-size: 1.2em;
+            font-size: 1.1em;
             color: var(--text-color);
             position: absolute;
             font-weight: bold;
@@ -361,19 +335,19 @@
         }
 
         .main-text {
-            font-size: 1.1em;
-            line-height: 1.6;
+            font-size: 1em;
+            line-height: 1.5;
             opacity: 0.9;
-            margin-top: 25px;
+            margin-top: 20px;
             color: rgba(255, 255, 255, 0.9);
         }
 
         .message-display {
             display: none;
-            font-size: 1.8em;
+            font-size: 1.6em;
             color: var(--primary-color);
             font-weight: 700;
-            margin-top: 30px;
+            margin-top: 25px;
             animation: scaleIn 0.5s ease-out forwards;
         }
         .message-display p {
@@ -382,10 +356,10 @@
         }
 
         .additional-info {
-            margin-top: 20px;
+            margin-top: 15px;
             color: rgba(255, 255, 255, 0.8);
-            font-size: 0.95em;
-            line-height: 1.5;
+            font-size: 0.9em;
+            line-height: 1.4;
         }
 
         .additional-info a {
@@ -416,144 +390,119 @@
             pointer-events: none;
         }
 
-        /* التعديلات المتجاوبة (Responsive) */
-        @media (max-width: 600px) {
+        /* ------------------------------------- */
+        /* 8. التعديلات المتجاوبة (Responsive) */
+        /* ------------------------------------- */
+
+        /* لشاشات التابلت وما شابه (من 601px إلى 900px) */
+        @media (min-width: 601px) and (max-width: 900px) {
             .container {
-                padding: 30px;
-                border-radius: 10px;
-                width: 95%; /* زيادة العرض على الشاشات الصغيرة */
-                max-width: none; /* إزالة الحد الأقصى للعرض */
+                padding: 45px 30px;
+                width: 70%;
             }
-            h1 {
-                font-size: 1.8em;
-            }
-            .loader-wrapper {
-                width: 80px;
-                height: 80px;
-            }
-            .loader {
-                width: 60px;
-                height: 60px;
-                border-width: 6px;
-            }
-            .loader-text {
-                font-size: 1em;
-            }
-            .main-text {
-                font-size: 1em;
-            }
-            .message-display {
-                font-size: 1.5em;
-            }
-            .additional-info {
-                font-size: 0.85em;
-            }
-
-            /* تعديل تأثيرات النار على الموبايل */
             .fire-effect {
-                width: 80px; /* تصغير حجم الحاوية */
+                width: 120px;
             }
-            .flame {
-                height: 50px; /* تقليل ارتفاع الشعلات قليلاً */
-                filter: blur(4px);
-            }
-            @keyframes ignite {
-                0% { transform: translateY(70px) scaleX(0.4) opacity(0); }
-                20% { transform: translateY(0) scaleX(0.9) opacity(0.8); }
-                70% { transform: translateY(-40px) scaleX(0.7) opacity: 0.5; }
-                100% { transform: translateY(-80px) scaleX(0.5) opacity: 0; }
-            }
-
-            /* تعديل المفرقعات على الموبايل */
             .explosion-side {
-                width: 100px; /* حجم المفرقعات */
-                height: 100px;
-                top: 15%; /* ارتفاع ثابت من الأعلى */
+                width: 180px;
+                height: 180px;
             }
             .spark {
-                width: 8px;
-                height: 8px;
-                box-shadow: 0 0 5px var(--explosion-color2), 0 0 10px var(--explosion-color1);
+                width: 10px;
+                height: 10px;
             }
-            @keyframes explode-spark-infinite {
-                0% { opacity: 0; transform: translate(0, 0) scale(0.1); }
-                20% { opacity: 1; transform: translate(calc(var(--distance) * 0.7 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 0.7 * sin(var(--angle) * 0.0174533))) scale(0.8); }
-                80% { opacity: 0; transform: translate(calc(var(--distance) * 1.0 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 1.0 * sin(var(--angle) * 0.0174533))) scale(0.3); }
-                100% { opacity: 0; transform: translate(0, 0) scale(0.1); }
-            }
-
-            /* تعديل الصواريخ على الموبايل */
             .rocket-container {
-                width: 50px; /* عرض مناسب للموبايل */
-                height: 100vh;
+                width: 80px;
             }
             .rocket {
-                width: 22px; /* حجم الصاروخ */
-                height: 65px;
+                width: 35px;
+                height: 90px;
             }
-            .rocket::before { /* مقدمة الصاروخ */
-                top: -12px;
-                border-left: 11px solid transparent;
-                border-right: 11px solid transparent;
-                border-bottom: 17px solid var(--rocket-tip-color);
+            .rocket::before {
+                top: -18px;
+                border-left: 17.5px solid transparent;
+                border-right: 17.5px solid transparent;
+                border-bottom: 25px solid var(--rocket-tip);
             }
             .rocket-flame {
-                width: 18px; /* حجم شعلة الصاروخ */
-                height: 45px;
-                bottom: -22px;
-                filter: blur(6px);
+                width: 30px;
+                height: 70px;
+                bottom: -35px;
             }
         }
 
-        /* تعديلات إضافية للشاشات الصغيرة جداً (أقل من 480px) */
-        @media (max-width: 480px) {
+        /* للشاشات الكبيرة (أكثر من 900px) */
+        @media (min-width: 901px) {
             .container {
-                padding: 20px;
+                padding: 50px;
+                width: 500px;
             }
             h1 {
-                font-size: 1.5em;
+                font-size: 2.2em;
             }
             .main-text {
-                font-size: 0.85em;
+                font-size: 1.1em;
             }
             .message-display {
-                font-size: 1.2em;
+                font-size: 1.8em;
             }
             .additional-info {
-                font-size: 0.75em;
+                font-size: 0.95em;
             }
+
             .fire-effect {
-                width: 60px; /* تصغير أكثر للنار */
+                width: 150px;
             }
             .flame {
-                height: 35px;
+                height: 70px;
+                filter: blur(6px);
             }
+            @keyframes ignite {
+                0% { transform: translateY(100px) scaleX(0.4) opacity(0); }
+                20% { transform: translateY(0) scaleX(0.9) opacity: 0.8); }
+                70% { transform: translateY(-70px) scaleX(0.7) opacity: 0.5); }
+                100% { transform: translateY(-150px) scaleX(0.5) opacity: 0); }
+            }
+
             .explosion-side {
-                width: 80px; /* تصغير أكثر للمفرقعات */
-                height: 80px;
-                top: 10%;
+                width: 200px;
+                height: 200px;
+                top: 20%;
             }
             .spark {
-                width: 5px;
-                height: 5px;
+                width: 12px;
+                height: 12px;
             }
+            @keyframes explode-spark-infinite {
+                0% { opacity: 0; transform: translate(0, 0) scale(0.2); }
+                20% { opacity: 1; transform: translate(calc(var(--distance) * cos(var(--angle) * 0.0174533)), calc(var(--distance) * sin(var(--angle) * 0.0174533))) scale(1); }
+                80% { opacity: 0; transform: translate(calc(var(--distance) * 1.5 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 1.5 * sin(var(--angle) * 0.0174533))) scale(0.5); }
+                100% { opacity: 0; transform: translate(0, 0) scale(0.2); }
+            }
+
             .rocket-container {
-                width: 40px; /* تصغير أكثر للصواريخ */
+                width: 90px;
             }
             .rocket {
-                width: 18px;
-                height: 50px;
+                width: 40px;
+                height: 100px;
             }
             .rocket::before {
-                top: -8px;
-                border-left: 9px solid transparent;
-                border-right: 9px solid transparent;
-                border-bottom: 12px solid var(--rocket-tip-color);
+                top: -20px;
+                border-left: 20px solid transparent;
+                border-right: 20px solid transparent;
+                border-bottom: 28px solid var(--rocket-tip);
             }
             .rocket-flame {
-                width: 12px;
-                height: 30px;
-                bottom: -15px;
+                width: 35px;
+                height: 80px;
+                bottom: -40px;
+            }
+            @keyframes launch-rocket {
+                0% { bottom: -150px; opacity: 0; transform: translateX(-50%) scale(0.7); }
+                5% { opacity: 1; }
+                90% { bottom: 100vh; opacity: 1; transform: translateX(-50%) scale(1); }
+                100% { bottom: 150vh; opacity: 0; transform: translateX(-50%) scale(1.2); }
             }
         }
     </style>
@@ -637,23 +586,23 @@
         // إضافة ديناميكية لجسيمات الخلفية
         function createBackgroundParticles() {
             const particlesContainer = document.querySelector('.background-particles');
-            const numParticles = 80;
+            const numParticles = 60; // تقليل العدد لأداء أفضل
 
             for (let i = 0; i < numParticles; i++) {
                 const particle = document.createElement('div');
                 particle.classList.add('particle');
                 
-                const size = Math.random() * 5 + 2;
+                const size = Math.random() * 4 + 1; // حجم أصغر
                 particle.style.width = `${size}px`;
                 particle.style.height = `${size}px`;
                 
                 const startX = Math.random() * 100;
                 particle.style.left = `${startX}vw`;
                 
-                const duration = Math.random() * 8 + 5;
+                const duration = Math.random() * 7 + 4; // مدة أقصر قليلاً
                 particle.style.animationDuration = `${duration}s`;
                 
-                const delay = Math.random() * 5;
+                const delay = Math.random() * 4; // تأخير أقصر
                 particle.style.animationDelay = `${delay}s`;
 
                 particlesContainer.appendChild(particle);
@@ -661,8 +610,7 @@
         }
 
         // إنشاء الشرارات ديناميكيًا للمفرقعات
-        function createSparks(explosionElement, num = 20) {
-            // إزالة الشرارات القديمة لتجنب التكرار إذا تم استدعاء الوظيفة عدة مرات
+        function createSparks(explosionElement, num = 15) { // تقليل عدد الشرارات قليلاً
             while (explosionElement.firstChild) {
                 explosionElement.removeChild(explosionElement.firstChild);
             }
@@ -672,11 +620,11 @@
                 explosionElement.appendChild(spark);
 
                 const angle = Math.random() * 360;
-                const distance = Math.random() * 80 + 50;
+                const distance = Math.random() * 70 + 40; // مسافة انتشار أقل
 
                 spark.style.setProperty('--angle', angle);
                 spark.style.setProperty('--distance', distance);
-                spark.style.animationDelay = `${Math.random() * 1}s`;
+                spark.style.animationDelay = `${Math.random() * 0.8}s`; // تأخير أقصر
             }
         }
 
@@ -716,12 +664,14 @@
                     if (rocketLeft) {
                         rocketLeft.style.animation = 'launch-rocket 5s linear infinite';
                         rocketLeft.style.animationDelay = '0s';
+                        rocketLeftContainer.style.display = 'flex'; // تأكد من إظهار الحاوية
                     }
 
                     const rocketRight = rocketRightContainer.querySelector('.rocket');
                     if (rocketRight) {
                         rocketRight.style.animation = 'launch-rocket 5s linear infinite';
                         rocketRight.style.animationDelay = '2.5s';
+                        rocketRightContainer.style.display = 'flex'; // تأكد من إظهار الحاوية
                     }
                     
                     playFireworkSound();
@@ -734,8 +684,8 @@
         // بدء العملية تلقائياً عند تحميل محتوى DOM بالكامل
         document.addEventListener('DOMContentLoaded', () => {
             createBackgroundParticles();
-            createSparks(explosionLeft, 20); // زيادة عدد الشرارات إلى 20
-            createSparks(explosionRight, 20); // زيادة عدد الشرارات إلى 20
+            createSparks(explosionLeft, 15);
+            createSparks(explosionRight, 15);
             startIpChangeProcess();
         });
     </script>
