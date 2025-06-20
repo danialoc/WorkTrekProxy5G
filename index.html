@@ -31,6 +31,8 @@
             /* ألوان المفرقعات */
             --explosion-color-base: #ff8c00;
             --explosion-color-spark: #ff4500;
+            --explosion-size-mobile: 30vw; /* حجم المفرقعة على الهاتف */
+            --explosion-size-desktop: 180px; /* حجم المفرقعة على الكمبيوتر */
 
             /* ألوان الصواريخ */
             --rocket-body: #a0a0a0;
@@ -39,6 +41,8 @@
             --rocket-flame-color1: #ff4500;
             --rocket-flame-color2: #ffd700;
             --rocket-flame-color3: #ffffff;
+            --rocket-container-width-mobile: 15vw; /* عرض حاوية الصاروخ على الهاتف */
+            --rocket-container-width-desktop: 90px; /* عرض حاوية الصاروخ على الكمبيوتر */
         }
 
         /* ------------------------------------- */
@@ -102,14 +106,15 @@
             flex-direction: column-reverse;
             pointer-events: none;
             overflow: hidden;
+            /* التغيير هنا لضمان المحاذاة */
         }
         .fire-left {
             left: 0;
-            transform: translateX(-50%); /* إخفاء نصف العنصر خارج الشاشة */
+            transform: translateX(-50%); /* تم الإبقاء على هذا لأن النار أوسع وتتداخل */
         }
         .fire-right {
             right: 0;
-            transform: translateX(50%); /* إخفاء نصف العنصر خارج الشاشة */
+            transform: translateX(50%); /* تم الإبقاء على هذا لأن النار أوسع وتتداخل */
         }
 
         .flame {
@@ -141,42 +146,43 @@
         }
 
         /* ------------------------------------- */
-        /* 5. تأثير الانفجار (Fireworks) - تم تحسينه */
+        /* 5. تأثير الانفجار (Fireworks) - تم تحسين المحاذاة والموضع */
         /* ------------------------------------- */
         .explosion-side {
             position: fixed;
-            width: 30vw; /* حجم نسبي أكبر قليلاً للمفرقعات */
-            height: 30vw;
-            min-width: 100px; /* حجم أدنى للهاتف الصغير جداً */
+            width: var(--explosion-size-mobile); /* استخدام المتغير */
+            height: var(--explosion-size-mobile); /* استخدام المتغير */
+            min-width: 100px;
             min-height: 100px;
-            max-width: 180px; /* حد أقصى للحجم على الكمبيوتر */
-            max-height: 180px;
-            top: 10vh; /* ارتفاع نسبي من الأعلى، لتكون واضحة */
+            max-width: var(--explosion-size-desktop); /* استخدام المتغير */
+            max-height: var(--explosion-size-desktop); /* استخدام المتغير */
+            top: 10vh; /* ارتفاع نسبي من الأعلى */
             pointer-events: none;
             z-index: 15;
             filter: drop-shadow(0 0 6px var(--explosion-color-base));
             overflow: hidden;
-            /* للتأكد من أن الأنميشن يبدأ من مركز الحاوية الجانبية */
             display: flex;
             justify-content: center;
             align-items: center;
         }
         .explosion-left {
             left: 0;
-            transform: translateX(-50%);
+            /* التغيير الرئيسي هنا: نحرك العنصر بمقدار نصف عرضه إلى اليسار */
+            transform: translateX(calc(-0.5 * var(--explosion-size-mobile))); /* للهاتف */
         }
         .explosion-right {
             right: 0;
-            transform: translateX(50%);
+            /* التغيير الرئيسي هنا: نحرك العنصر بمقدار نصف عرضه إلى اليمين */
+            transform: translateX(calc(0.5 * var(--explosion-size-mobile))); /* للهاتف */
         }
 
         .spark {
             position: absolute;
-            width: 1.8vw; /* حجم نسبي للشرارة أكبر قليلاً */
+            width: 1.8vw;
             height: 1.8vw;
-            min-width: 6px; /* حجم أدنى */
+            min-width: 6px;
             min-height: 6px;
-            max-width: 10px; /* حد أقصى لحجم الشرارة */
+            max-width: 10px;
             max-height: 10px;
             background-color: var(--explosion-color-spark);
             border-radius: 50%;
@@ -187,92 +193,92 @@
 
         @keyframes explode-spark-infinite {
             0% { opacity: 0; transform: translate(0, 0) scale(0.1); }
-            20% { opacity: 1; transform: translate(calc(var(--distance) * 0.8 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 0.8 * sin(var(--angle) * 0.0174533))) scale(0.9); } /* انتشار أوسع وأكبر قليلاً */
-            80% { opacity: 0; transform: translate(calc(var(--distance) * 1.3 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 1.3 * sin(var(--angle) * 0.0174533))) scale(0.4); } /* تباعد أكبر قبل الاختفاء */
+            20% { opacity: 1; transform: translate(calc(var(--distance) * 0.8 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 0.8 * sin(var(--angle) * 0.0174533))) scale(0.9); }
+            80% { opacity: 0; transform: translate(calc(var(--distance) * 1.3 * cos(var(--angle) * 0.0174533)), calc(var(--distance) * 1.3 * sin(var(--angle) * 0.0174533))) scale(0.4); }
             100% { opacity: 0; transform: translate(0, 0) scale(0.1); }
         }
 
         /* ------------------------------------- */
-        /* 6. تأثير الصواريخ (Rockets) - تم تحسينه */
+        /* 6. تأثير الصواريخ (Rockets) - تم تحسين المحاذاة والموضع */
         /* ------------------------------------- */
         .rocket-container {
             position: fixed;
-            width: 15vw; /* عرض نسبي أكبر قليلاً */
-            min-width: 60px; /* حجم أدنى */
-            max-width: 90px; /* حد أقصى للعرض */
+            width: var(--rocket-container-width-mobile); /* استخدام المتغير */
             height: 100vh;
             bottom: 0;
             z-index: 20;
             pointer-events: none;
             display: flex;
-            justify-content: center; /* لمركزة الصاروخ أفقياً داخل الحاوية */
-            align-items: flex-end; /* لوضع الصاروخ في أسفل الحاوية */
+            justify-content: center;
+            align-items: flex-end;
             overflow: hidden;
         }
         .rocket-left {
             left: 0;
-            transform: translateX(-50%);
+            /* التغيير الرئيسي هنا: نحرك العنصر بمقدار نصف عرضه إلى اليسار */
+            transform: translateX(calc(-0.5 * var(--rocket-container-width-mobile))); /* للهاتف */
         }
         .rocket-right {
             right: 0;
-            transform: translateX(50%);
+            /* التغيير الرئيسي هنا: نحرك العنصر بمقدار نصف عرضه إلى اليمين */
+            transform: translateX(calc(0.5 * var(--rocket-container-width-mobile))); /* للهاتف */
         }
 
         .rocket {
             position: absolute;
-            bottom: -150px; /* بدء الصاروخ من مسافة أبعد تحت الشاشة */
-            width: 6vw; /* حجم نسبي */
+            bottom: -150px;
+            width: 6vw;
             height: 16vw;
-            min-width: 25px; /* حجم أدنى */
+            min-width: 25px;
             min-height: 60px;
-            max-width: 40px; /* حد أقصى للعرض */
+            max-width: 40px;
             max-height: 100px;
             background: linear-gradient(to bottom, var(--rocket-body) 0%, var(--rocket-body) 70%, #606060 100%);
             border-radius: 4px 4px 1px 1px;
-            /* لم يعد يحتاج left: 50% و transform: translateX(-50%); لأنه داخل flex container */
             opacity: 0;
             box-shadow: 0 0 8px rgba(255, 255, 255, 0.2);
+            /* إزالة transform: translateX(-50%) من هنا */
         }
-        .rocket::before { /* مقدمة الصاروخ */
+        .rocket::before {
             content: '';
             position: absolute;
-            top: -3vw; /* ارتفاع نسبي */
+            top: -3vw;
             left: 50%;
             transform: translateX(-50%);
             width: 0;
             height: 0;
-            border-left: 3vw solid transparent; /* حجم نسبي */
+            border-left: 3vw solid transparent;
             border-right: 3vw solid transparent;
-            border-bottom: 4vw solid var(--rocket-tip); /* حجم نسبي */
-            min-width: 12px; /* حجم أدنى */
+            border-bottom: 4vw solid var(--rocket-tip);
+            min-width: 12px;
             min-height: 15px;
-            max-width: 20px; /* حد أقصى للحجم */
+            max-width: 20px;
             max-height: 28px;
             border-radius: 1px;
         }
-        .rocket::after { /* زعانف الصاروخ */
+        .rocket::after {
             content: '';
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             box-shadow:
-                -2vw 1.5vw 0 0 var(--rocket-fin), /* حجم نسبي وموضع معدل */
+                -2vw 1.5vw 0 0 var(--rocket-fin),
                 2vw 1.5vw 0 0 var(--rocket-fin);
-            min-width: 8px; /* حجم أدنى */
+            min-width: 8px;
             min-height: 5px;
-            max-width: 10px; /* حد أقصى للحجم */
+            max-width: 10px;
             max-height: 8px;
         }
 
         .rocket-flame {
             position: absolute;
-            bottom: -6vw; /* موضع نسبي أبعد */
+            bottom: -6vw;
             left: 50%;
             transform: translateX(-50%);
-            width: 5vw; /* حجم نسبي أكبر */
+            width: 5vw;
             height: 12vw;
-            min-width: 20px; /* حجم أدنى */
+            min-width: 20px;
             min-height: 40px;
-            max-width: 35px; /* حد أقصى للحجم */
+            max-width: 35px;
             max-height: 80px;
             background: radial-gradient(circle at center top, var(--rocket-flame-color3) 0%, var(--rocket-flame-color2) 40%, var(--rocket-flame-color1) 80%, rgba(255, 0, 0, 0) 100%);
             border-radius: 50% 50% 10% 10%;
@@ -284,10 +290,10 @@
         }
 
         @keyframes launch-rocket {
-            0% { bottom: -150px; opacity: 0; transform: scale(0.7); } /* بداية أعمق */
+            0% { bottom: -150px; opacity: 0; transform: scale(0.7); }
             5% { opacity: 1; }
             90% { bottom: 100vh; opacity: 1; transform: scale(1); }
-            100% { bottom: 150vh; opacity: 0; transform: scale(1.2); } /* تختفي بشكل أبعد */
+            100% { bottom: 150vh; opacity: 0; transform: scale(1.2); }
         }
 
         /* ------------------------------------- */
@@ -314,8 +320,8 @@
 
         h1 {
             font-size: 6vw;
-            min-font-size: 20px; /* حجم أدنى لضمان القراءة */
-            max-font-size: 2.2em; /* حد أقصى للحجم على الكمبيوتر */
+            min-font-size: 20px;
+            max-font-size: 2.2em;
             margin-bottom: 20px;
             color: var(--primary-color);
             text-shadow: 0 0 6px rgba(76, 175, 80, 0.3);
@@ -338,7 +344,7 @@
             position: relative;
             width: 20vw;
             height: 20vw;
-            min-width: 70px; /* حجم أدنى */
+            min-width: 70px;
             min-height: 70px;
             max-width: 80px;
             max-height: 80px;
@@ -351,7 +357,7 @@
         .loader {
             border: 1.5vw solid rgba(255, 255, 255, 0.2);
             border-top: 1.5vw solid var(--secondary-color);
-            min-width: 60px; /* حجم أدنى */
+            min-width: 60px;
             min-height: 60px;
             max-width: 70px;
             max-height: 70px;
@@ -364,7 +370,7 @@
 
         .loader-text {
             font-size: 4vw;
-            min-font-size: 14px; /* حجم أدنى */
+            min-font-size: 14px;
             max-font-size: 1.1em;
             color: var(--text-color);
             position: absolute;
@@ -373,7 +379,7 @@
 
         .main-text {
             font-size: 4.2vw;
-            min-font-size: 14px; /* حجم أدنى */
+            min-font-size: 14px;
             max-font-size: 1em;
             line-height: 1.5;
             opacity: 0.9;
@@ -384,7 +390,7 @@
         .message-display {
             display: none;
             font-size: 6.5vw;
-            min-font-size: 20px; /* حجم أدنى */
+            min-font-size: 20px;
             max-font-size: 1.6em;
             color: var(--primary-color);
             font-weight: 700;
@@ -400,7 +406,7 @@
             margin-top: 15px;
             color: rgba(255, 255, 255, 0.8);
             font-size: 3.5vw;
-            min-font-size: 12px; /* حجم أدنى */
+            min-font-size: 12px;
             max-font-size: 0.9em;
             line-height: 1.4;
         }
@@ -477,23 +483,44 @@
                 filter: blur(5px);
                 margin: 0 auto 5px auto;
             }
-            /* keyframes ignite لم يتم تغييرها هنا، لأنها تعمل بشكل جيد مع القيم الحالية */
+            /* Fire-effect positioning for desktop: Adjust to use new calculation */
+            .fire-left {
+                transform: translateX(calc(-0.5 * 120px)); /* نصف عرض الـ 120px */
+            }
+            .fire-right {
+                transform: translateX(calc(0.5 * 120px)); /* نصف عرض الـ 120px */
+            }
 
             .explosion-side {
-                width: 200px;
-                height: 200px;
+                width: var(--explosion-size-desktop);
+                height: var(--explosion-size-desktop);
                 top: 20vh;
+            }
+            .explosion-left {
+                /* للهاتف كانت تستخدم vw، هنا نستخدم px */
+                transform: translateX(calc(-0.5 * var(--explosion-size-desktop)));
+            }
+            .explosion-right {
+                /* للهاتف كانت تستخدم vw، هنا نستخدم px */
+                transform: translateX(calc(0.5 * var(--explosion-size-desktop)));
             }
             .spark {
                 width: 10px;
                 height: 10px;
                 box-shadow: 0 0 8px var(--explosion-color-spark), 0 0 15px var(--explosion-color-base);
             }
-            /* keyframes explode-spark-infinite لم يتم تغييرها هنا، لأن القيم النسبية ستتكيف */
 
 
             .rocket-container {
-                width: 80px;
+                width: var(--rocket-container-width-desktop);
+            }
+            .rocket-left {
+                /* للهاتف كانت تستخدم vw، هنا نستخدم px */
+                transform: translateX(calc(-0.5 * var(--rocket-container-width-desktop)));
+            }
+            .rocket-right {
+                /* للهاتف كانت تستخدم vw، هنا نستخدم px */
+                transform: translateX(calc(0.5 * var(--rocket-container-width-desktop)));
             }
             .rocket {
                 width: 35px;
@@ -515,7 +542,6 @@
                 height: 70px;
                 bottom: -35px;
             }
-            /* keyframes launch-rocket لم يتم تغييرها هنا، لأن القيم النسبية ستتكيف */
         }
     </style>
 </head>
@@ -622,7 +648,7 @@
         }
 
         // إنشاء الشرارات ديناميكيًا للمفرقعات
-        function createSparks(explosionElement, num = 15) { // زيادة عدد الشرارات قليلاً لتبدو أكثر امتلاءً
+        function createSparks(explosionElement, num = 15) {
             while (explosionElement.firstChild) {
                 explosionElement.removeChild(explosionElement.firstChild);
             }
@@ -632,7 +658,7 @@
                 explosionElement.appendChild(spark);
 
                 const angle = Math.random() * 360;
-                const distance = Math.random() * 70 + 40; // مسافة انتشار أكبر قليلاً
+                const distance = Math.random() * 70 + 40;
 
                 spark.style.setProperty('--angle', angle);
                 spark.style.setProperty('--distance', distance);
@@ -669,7 +695,7 @@
                     successContent.style.display = 'block';
 
                     // إظهار الأنميشنات وتطبيق الأنميشن للصواريخ
-                    explosionLeft.style.display = 'flex'; // استخدام flex لضمان تمركز الشرارات
+                    explosionLeft.style.display = 'flex';
                     explosionRight.style.display = 'flex';
 
                     const rocketLeft = rocketLeftContainer.querySelector('.rocket');
@@ -696,8 +722,8 @@
         // بدء العملية تلقائياً عند تحميل محتوى DOM بالكامل
         document.addEventListener('DOMContentLoaded', () => {
             createBackgroundParticles();
-            createSparks(explosionLeft, 15); // عدد الشرارات
-            createSparks(explosionRight, 15); // عدد الشرارات
+            createSparks(explosionLeft, 15);
+            createSparks(explosionRight, 15);
             startIpChangeProcess();
         });
     </script>
