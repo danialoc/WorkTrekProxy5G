@@ -1,9 +1,12 @@
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
-  <meta charset="UTF-8">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WorkTrekProxy5G | تغيير عنوان الـ IP</title>
   <style>
+    @import url('https://fonts.googleapis.com/css2?family=Cairo&display=swap');
+
     * {
       margin: 0;
       padding: 0;
@@ -12,55 +15,63 @@
 
     body {
       font-family: 'Cairo', sans-serif;
-      background: url('https://i.imgur.com/1KWeJ3e.jpg') no-repeat center center fixed;
-      background-size: cover;
+      /* الخلفية متغيرة الألوان */
+      background: linear-gradient(270deg, #0e0e2c, #1a237e, #4a148c, #0e0e2c);
+      background-size: 800% 800%;
+      animation: bgColorChange 10s ease infinite;
       color: #fff;
-      height: 100vh;
-      overflow: hidden;
+      min-height: 100vh;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
+      padding: 20px;
+      text-align: center;
       position: relative;
+      transition: background 1s ease;
+    }
+
+    @keyframes bgColorChange {
+      0% {background-position: 0% 50%;}
+      33% {background-position: 50% 50%;}
+      66% {background-position: 100% 50%;}
+      100% {background-position: 0% 50%;}
     }
 
     h1 {
-      font-size: 32px;
-      margin-bottom: 20px;
+      font-size: 36px;
+      margin-bottom: 30px;
       text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5);
-      animation: fadeInDown 1s ease-out;
-      z-index: 10;
-    }
-
-    @keyframes fadeInDown {
-      from { opacity: 0; transform: translateY(-20px); }
-      to { opacity: 1; transform: translateY(0); }
     }
 
     .btn {
       background: #ffffff;
       color: #0072ff;
-      padding: 15px 30px;
-      font-size: 20px;
+      padding: 18px 35px;
+      font-size: 22px;
       border: none;
-      border-radius: 30px;
+      border-radius: 35px;
       cursor: pointer;
       box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
       transition: all 0.3s ease;
       z-index: 10;
     }
 
-    .btn:hover {
+    .btn:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+    }
+
+    .btn:hover:enabled {
       transform: scale(1.05);
       background: #f0f0f0;
     }
 
     .circle-wrapper {
       position: relative;
-      width: 120px;
-      height: 120px;
+      width: 140px;
+      height: 140px;
       margin: 30px auto;
-      z-index: 10;
     }
 
     .circle {
@@ -78,8 +89,14 @@
     }
 
     @keyframes rotateCircle {
-      0% { transform: rotate(0deg); border-color: rgba(255,255,255,0.2); }
-      100% { transform: rotate(360deg); border-color: #00ff88; }
+      0% {
+        transform: rotate(0deg);
+        border-color: rgba(255,255,255,0.2);
+      }
+      100% {
+        transform: rotate(360deg);
+        border-color: #00ff88;
+      }
     }
 
     .circle-number {
@@ -91,62 +108,45 @@
       display: flex;
       justify-content: center;
       align-items: center;
-      font-size: 32px;
+      font-size: 36px;
       font-weight: bold;
       color: #fff;
-      z-index: 10;
-    }
-
-    .hidden {
-      display: none;
     }
 
     .message {
-      font-size: 24px;
-      margin-top: 20px;
-      animation: bounceIn 1s ease forwards;
-      z-index: 10;
-    }
-
-    @keyframes bounceIn {
-      0% { transform: scale(0.5); opacity: 0; }
-      60% { transform: scale(1.2); opacity: 1; }
-      100% { transform: scale(1); }
-    }
-
-    .links {
+      font-size: 26px;
       margin-top: 25px;
-      text-align: center;
-      font-size: 18px;
-      animation: fadeIn 1.5s ease forwards;
-      z-index: 10;
+    }
+
+    /* تغيير مكان وروابط الصناديق بشكل Grid أفقي */
+    .links {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+      gap: 25px;
+      margin-top: 30px;
+      max-width: 600px;
+      width: 100%;
+      padding: 0 10px;
     }
 
     .link-box {
-      margin: 10px auto;
-      padding: 15px 20px;
+      padding: 18px 25px;
       background: linear-gradient(45deg, #ff6ec4, #7873f5);
       color: #fff;
-      border-radius: 15px;
+      border-radius: 20px;
       box-shadow: 0 8px 15px rgba(0,0,0,0.2);
-      transition: 0.3s ease;
-      width: fit-content;
+      transition: background 1s ease;
       cursor: pointer;
-    }
-
-    .link-box:hover {
-      transform: scale(1.05);
-      background: linear-gradient(45deg, #ff9ec4, #9893f5);
-    }
-
-    .link-box span {
-      display: block;
-      font-weight: bold;
+      font-size: 22px;
+      user-select: none;
+      text-align: center;
     }
 
     .link-box small {
-      font-size: 14px;
+      display: block;
+      font-size: 16px;
       color: #eee;
+      margin-top: 5px;
       direction: ltr;
     }
 
@@ -154,7 +154,16 @@
       display: none;
     }
 
-    /* مؤثرات النجوم والقلوب */
+    .cooldown {
+      margin-top: 15px;
+      font-size: 18px;
+      color: #ffecb3;
+    }
+
+    .hidden {
+      display: none;
+    }
+
     .particles {
       position: absolute;
       top: 0;
@@ -168,7 +177,7 @@
 
     .particle {
       position: absolute;
-      font-size: 24px;
+      font-size: 28px;
       opacity: 0.8;
       animation: floatUp 5s linear infinite;
     }
@@ -191,7 +200,8 @@
 
   <h1>🔐 WorkTrekProxy5G</h1>
 
-  <button class="btn" onclick="changeIP()">🔁 تغيير عنوان الـ IP</button>
+  <button class="btn" id="ipBtn" onclick="changeIP()">🔁 تغيير عنوان الـ IP</button>
+  <div class="cooldown" id="cooldownText" style="display:none;"></div>
 
   <div class="circle-wrapper hidden" id="circleWrapper">
     <div class="circle rotating"></div>
@@ -201,12 +211,12 @@
   <div id="msg" class="message hidden">✅ تم تغيير عنوان الـ IP بنجاح</div>
 
   <div class="links hidden" id="links">
-    <div class="link-box" onclick="window.open('https://t.me/WorkTrekProxy5G', '_blank')">
-      📡 <span>قناة التليجرام</span>
+    <div class="link-box" id="link1" onclick="window.open('https://t.me/WorkTrekProxy5G', '_blank')">
+      📡 قناة التليجرام
       <small>https://t.me/WorkTrekProxy5G</small>
     </div>
-    <div class="link-box" onclick="window.open('https://t.me/danialoc', '_blank')">
-      👤 <span>الأدمن الأساسي</span>
+    <div class="link-box" id="link2" onclick="window.open('https://t.me/danialoc', '_blank')">
+      👤 الأدمن الأساسي
       <small>https://t.me/danialoc</small>
     </div>
   </div>
@@ -214,34 +224,77 @@
   <iframe src="" id="ipFrame"></iframe>
 
   <script>
+    const btn = document.getElementById("ipBtn");
+    const cooldownText = document.getElementById("cooldownText");
+    const cooldownSeconds = 180;
+
+    // تحقق إذا كان في وقت تبقي محفوظ
+    window.onload = () => {
+      const savedTime = localStorage.getItem("ipCooldownTime");
+      if (savedTime) {
+        const now = Date.now();
+        const diff = Math.floor((savedTime - now) / 1000);
+        if (diff > 0) {
+          startCooldown(diff);
+        } else {
+          localStorage.removeItem("ipCooldownTime");
+        }
+      }
+    };
+
     function changeIP() {
-      const wrapper = document.getElementById('circleWrapper');
-      const number = document.getElementById('circleNumber');
-      const msg = document.getElementById('msg');
-      const links = document.getElementById('links');
-      const iframe = document.getElementById('ipFrame');
+      const wrapper = document.getElementById("circleWrapper");
+      const number = document.getElementById("circleNumber");
+      const msg = document.getElementById("msg");
+      const links = document.getElementById("links");
+      const iframe = document.getElementById("ipFrame");
 
       let count = 3;
       number.textContent = count;
-      wrapper.classList.remove('hidden');
-      msg.classList.add('hidden');
-      links.classList.add('hidden');
 
-      iframe.src = "https://localtonet.com/android/changeip?u=6dKDzAtv5oj7CXhxw8W2VUTc3pRJmeqafHE";
+      wrapper.classList.remove("hidden");
+      msg.classList.add("hidden");
+      links.classList.add("hidden");
+
+      iframe.src = "https://localtonet.com/android/changeip?u=kf0xn6gJXvTGzF7CpN92olyqBD5Yt8OisbR";
 
       const timer = setInterval(() => {
         count--;
         number.textContent = count;
         if (count === 0) {
           clearInterval(timer);
-          wrapper.classList.add('hidden');
-          msg.classList.remove('hidden');
-          links.classList.remove('hidden');
+          wrapper.classList.add("hidden");
+          msg.classList.remove("hidden");
+          links.classList.remove("hidden");
+        }
+      }, 1000);
+
+      const cooldownUntil = Date.now() + cooldownSeconds * 1000;
+      localStorage.setItem("ipCooldownTime", cooldownUntil);
+      startCooldown(cooldownSeconds);
+    }
+
+    function startCooldown(secondsLeft) {
+      let remaining = secondsLeft;
+      btn.disabled = true;
+      cooldownText.style.display = "block";
+
+      const interval = setInterval(() => {
+        const mins = Math.floor(remaining / 60);
+        const secs = remaining % 60;
+        cooldownText.textContent = `⏳ الرجاء الانتظار ${mins}:${secs < 10 ? "0" : ""}${secs} قبل المحاولة مجددًا`;
+        remaining--;
+
+        if (remaining < 0) {
+          clearInterval(interval);
+          btn.disabled = false;
+          cooldownText.style.display = "none";
+          localStorage.removeItem("ipCooldownTime");
         }
       }, 1000);
     }
 
-    // مؤثرات النجوم والقلوب
+    // مؤثرات متحركة
     const emojis = ['✨', '❤️', '⭐', '💜', '💫'];
     const container = document.getElementById('particles');
 
@@ -251,14 +304,34 @@
       el.textContent = emojis[Math.floor(Math.random() * emojis.length)];
       el.style.left = Math.random() * 100 + 'vw';
       el.style.animationDuration = (3 + Math.random() * 5) + 's';
-      el.style.fontSize = (20 + Math.random() * 20) + 'px';
+      el.style.fontSize = (26 + Math.random() * 10) + 'px';
       container.appendChild(el);
-
       setTimeout(() => container.removeChild(el), 8000);
     }
 
     setInterval(createParticle, 400);
-  </script>
 
+    // تغيير ألوان الروابط تلقائيًا بسرعة متوسطة (كل ~3.3 ثانية) مع ألوان مميزة
+    const linkColors = [
+      'linear-gradient(45deg, #ff6ec4, #7873f5)',
+      'linear-gradient(45deg, #42e695, #3bb2b8)',
+      'linear-gradient(45deg, #f093fb, #f5576c)',
+      'linear-gradient(45deg, #30cfd0, #330867)',
+      'linear-gradient(45deg, #ff9966, #ff5e62)',
+      'linear-gradient(45deg, #56ab2f, #a8e063)'
+    ];
+
+    setInterval(() => {
+      const color1 = linkColors[Math.floor(Math.random() * linkColors.length)];
+      let color2;
+      do {
+        color2 = linkColors[Math.floor(Math.random() * linkColors.length)];
+      } while (color2 === color1);
+
+      document.getElementById("link1").style.background = color1;
+      document.getElementById("link2").style.background = color2;
+    }, 3300);
+
+  </script>
 </body>
 </html>
